@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_default"
+    tools:context=".pages.Home">
+
+    <LinearLayout
+        android:id="@+id/scrollViewAbsoluteZero"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/homeScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:id="@+id/songDataProgress"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="45sp"
+                    android:layout_height="45sp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="85dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/songsInfoTitleRecycler" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/songsRecyclerVIew"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true"
+                    android:paddingTop="10sp"
+                    android:paddingBottom="75sp"
+                    android:visibility="invisible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/songsInfoTitleRecycler"
+                    tools:listitem="@layout/recyclerview_home_song_item" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/songsInfoTitleRecycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/cardView4">
+
+                    <TextView
+                        android:id="@+id/textView16"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:text="@string/songs"
+                        android:textColor="@color/foreground_active"
+                        android:textSize="20sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/songsDownloadedInfo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="15dp"
+                        android:alpha="0.5"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:text="@string/downloaded"
+                        android:textColor="@color/foreground_active"
+                        android:textSize="20sp"
+                        android:visibility="gone"
+                        app:layout_constraintStart_toEndOf="@+id/textView16"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/textView22"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/googlesans_medium"
+                    android:text="@string/client"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/clientInstalledInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:alpha="0.5"
+                    android:fontFamily="@font/googlesans_medium"
+                    android:text="@string/installed"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="20sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView22"
+                    app:layout_constraintStart_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/textView22" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cardView4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="25dp"
+                    app:cardBackgroundColor="@color/background_level_b"
+                    app:cardCornerRadius="12sp"
+                    app:cardElevation="0sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView22">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/beatstarCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/background_level_a"
+                            android:paddingBottom="10sp">
+
+                            <TextView
+                                android:id="@+id/noClientText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:fontFamily="@font/googlesans_regular"
+                                android:text="@string/no_client"
+                                android:textColor="@color/foreground_active"
+                                android:textSize="20sp"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/cardView3"
+                                app:layout_constraintStart_toEndOf="@+id/cardView3"
+                                app:layout_constraintTop_toTopOf="@+id/cardView3" />
+
+                            <ProgressBar
+                                android:id="@+id/beatstarChecking"
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/beatstarIcon"
+                                app:layout_constraintEnd_toEndOf="@+id/beatstarIcon"
+                                app:layout_constraintStart_toStartOf="@+id/beatstarIcon"
+                                app:layout_constraintTop_toTopOf="@+id/beatstarIcon" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardView3"
+                                android:layout_width="45sp"
+                                android:layout_height="45sp"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="10dp"
+                                app:cardBackgroundColor="#00BEBEBE"
+                                app:cardCornerRadius="50sp"
+                                app:cardElevation="0sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/imageView13"
+                                    android:layout_width="45sp"
+                                    android:layout_height="45sp"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/ic_beatstar" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/beatstarTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="25dp"
+                                android:fontFamily="@font/googlesans_regular"
+                                android:text="Beatstar"
+                                android:textColor="@color/foreground_active"
+                                android:textSize="21sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/cardView3"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/beatstarIcon"
+                                android:layout_width="15sp"
+                                android:layout_height="15sp"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="1dp"
+                                android:alpha="0.4"
+                                android:src="@drawable/info_circle"
+                                app:layout_constraintStart_toEndOf="@+id/cardView3"
+                                app:layout_constraintTop_toBottomOf="@+id/beatstarTitle"
+                                app:tint="@color/foreground_active" />
+
+                            <TextView
+                                android:id="@+id/beatstarInfo"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="25dp"
+                                android:alpha="0.6"
+                                android:fontFamily="@font/googlesans_regular"
+                                android:text="@string/version_checking"
+                                android:textColor="@color/foreground_active"
+                                android:textSize="14sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/beatstarIcon"
+                                app:layout_constraintTop_toBottomOf="@+id/beatstarTitle" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <LinearLayout
+                            android:id="@+id/versionDivider"
+                            android:layout_width="match_parent"
+                            android:layout_height="1sp"
+                            android:orientation="vertical"></LinearLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/beatclone_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@color/background_level_a"
+                            android:paddingBottom="10sp">
+
+                            <ProgressBar
+                                android:id="@+id/beatcloneChecking"
+                                style="?android:attr/progressBarStyle"
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                app:layout_constraintBottom_toBottomOf="@+id/beatcloneIcon"
+                                app:layout_constraintEnd_toEndOf="@+id/beatcloneIcon"
+                                app:layout_constraintStart_toStartOf="@+id/beatcloneIcon"
+                                app:layout_constraintTop_toTopOf="@+id/beatcloneIcon" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/cardView31"
+                                android:layout_width="45sp"
+                                android:layout_height="45sp"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="10dp"
+                                app:cardBackgroundColor="#00BEBEBE"
+                                app:cardCornerRadius="50sp"
+                                app:cardElevation="0sp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/imageView131"
+                                    android:layout_width="45sp"
+                                    android:layout_height="45sp"
+                                    android:scaleType="fitCenter"
+                                    android:src="@drawable/ic_beatstar" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:id="@+id/beatcloneTitle"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginEnd="25dp"
+                                android:fontFamily="@font/googlesans_regular"
+                                android:text="Beatclone"
+                                android:textColor="@color/foreground_active"
+                                android:textSize="21sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/cardView31"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <ImageView
+                                android:id="@+id/beatcloneIcon"
+                                android:layout_width="15sp"
+                                android:layout_height="15sp"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="1dp"
+                                android:alpha="0.4"
+                                android:src="@drawable/info_circle"
+                                app:layout_constraintStart_toEndOf="@+id/cardView31"
+                                app:layout_constraintTop_toBottomOf="@+id/beatcloneTitle"
+                                app:tint="@color/foreground_active" />
+
+                            <TextView
+                                android:id="@+id/beatcloneInfo"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginEnd="25dp"
+                                android:alpha="0.6"
+                                android:fontFamily="@font/googlesans_regular"
+                                android:text="@string/version_checking"
+                                android:textColor="@color/foreground_active"
+                                android:textSize="14sp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/beatcloneIcon"
+                                app:layout_constraintTop_toBottomOf="@+id/beatcloneTitle" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/songsTitleOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:tag="sticky"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout61"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="-40dp"
+            android:alpha="0.3"
+            android:background="@color/background_default"
+            android:orientation="vertical"
+            android:rotation="-0.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout6"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearsfdhh"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="-40dp"
+            android:alpha="0.3"
+            android:background="@color/background_default"
+            android:orientation="vertical"
+            android:rotation="-0.5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout6"></LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="-20dp"
+            android:layout_marginTop="-20dp"
+            android:layout_marginEnd="-20dp"
+            android:layout_marginBottom="-5dp"
+            android:background="@color/background_default"
+            android:orientation="vertical"
+            android:rotation="-0.5"
+            app:layout_constraintBottom_toBottomOf="@+id/textView161"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+        <TextView
+            android:id="@+id/textView161"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="@font/googlesans_medium"
+            android:text="@string/songs"
+            android:textColor="@color/foreground_active"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/songsDownloadedInfo1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="15dp"
+            android:alpha="0.5"
+            android:fontFamily="@font/googlesans_medium"
+            android:text="@string/downloaded"
+            android:textColor="@color/foreground_active"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/textView161"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

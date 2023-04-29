@@ -1,0 +1,102 @@
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    //id 'com.google.gms.google-services' TODO apply plugin with google-services.json
+    id 'org.jetbrains.kotlin.android'
+    id 'com.google.firebase.crashlytics'
+}
+
+android {
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "ru.acted.beatcharts"
+        minSdk 26
+        targetSdk 33
+        versionCode 2
+        versionName "0.1.4"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.22.1"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    namespace 'ru.acted.beatcharts'
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:31.0.2')
+
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-firestore-ktx'
+
+    //Runtime things
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.0"
+
+    //Crashlytics
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
+    implementation("com.android.support:palette-v7:28.0.0")
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+
+    implementation 'com.backendless:backendless:6.3.4'
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'com.google.android.material:material:1.9.0-beta01'
+
+    //DO NOT FORGET TO MENTION THESE LIBRARIES IN THE APPLICATION
+
+    //Blur
+    implementation 'com.github.Dimezis:BlurView:version-2.0.3'
+
+    //Image cropping
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+
+    //Color picking
+    implementation 'com.github.duanhong169:colorpicker:1.1.6'
+
+    //Audio converter
+    implementation 'com.arthenica:mobile-ffmpeg-full:4.4'
+}
