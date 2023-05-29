@@ -16,13 +16,14 @@ import ru.acted.beatcharts.types.*
 import ru.acted.beatcharts.utils.BeatChartsUtils
 import ru.acted.beatcharts.utils.BeatChartsUtils.Data.Companion.colorToHex
 import ru.acted.beatcharts.viewModels.MainViewModel
+import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.lang.Exception
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.experimental.or
 import kotlin.math.floor
-
-import kotlin.js.*
 
 
 class DeEncodingManager {
@@ -344,10 +345,8 @@ class DeEncodingManager {
                     }
                     3 -> {
                         when (currentJSONFieldNumber) {
-                            1 -> chart.notes[chart.notes.lastIndex].offsets.add(value) //doneString += "\"offset\": "
-                            3 -> {
-                                //TODO add multi lane import support here
-                            }//doneString += "\"lane\": "
+                            1 -> chart.notes[chart.notes.lastIndex].offsets.add(NoteOffset().apply { position = value }) //doneString += "\"offset\": "
+                            3 -> chart.notes[chart.notes.lastIndex].offsets[chart.notes.last().offsets.lastIndex].lane = value.toInt()-1 //doneString += "\"lane\": "
                             13 -> chart.notes[chart.notes.lastIndex].size = value.toInt() //doneString += "\"size\": "
                         }
                     }
@@ -455,6 +454,7 @@ class DeEncodingManager {
 
         val chartConversionResult = ChartConversionResult()
 
+        //This value is required for stacking effects on the same position to one record in file
         var prevEffeсtPos = 0
 
         //Recognize whole .chart file and convert positions
@@ -603,12 +603,22 @@ class DeEncodingManager {
 
                             note.lane = noteData[0].toInt()
                             note.swipe = 0
-                            note.offsets.add(toBeatstarOffset(chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd().toInt(), chart.bpm))
+                            //First offset data
+                            note.offsets.add(NoteOffset().apply {
+                                position = toBeatstarOffset(chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd().toInt(), chart.bpm)
+                                lane = note.lane
+                                rawPos = note.rawPos.first()
+                            })
                             //Set note points (if this is long note there will be 2 points)
                             if (noteData[1] != "0") {
-                                note.offsets.add(toBeatstarOffset(noteData[1].toInt() + chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd().toInt(), chart.bpm))
                                 note.type = 2
                                 note.rawPos.add(chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd().toLong() + noteData[1].toLong())
+                                //Second offset data
+                                note.offsets.add(NoteOffset().apply {
+                                    position = toBeatstarOffset(noteData[1].toInt() + chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd().toInt(), chart.bpm)
+                                    lane = note.lane
+                                    rawPos = note.rawPos.last()
+                                })
                             } else note.type = 1
 
 
@@ -671,6 +681,61 @@ class DeEncodingManager {
                                         continue
                                     }
                                     chart.speeds.add(speed)
+                                }
+                                'h' -> {
+                                    //This is rail hold position change prop
+                                    try {
+                                        val tagPosition = chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().toLong()
+                                        var currentLane = 0
+                                        var nextLane = 0
+                                        chartLines[i].substring(chartLines[i].indexOf("h")+1).let {
+                                            currentLane = it[0].toString().toInt()-1
+                                            nextLane = it[2].toString().toInt()-1
+                                        }
+
+                                        //Check ALL notes to match position and lane (there is no better way...)
+                                        var isNoteFound = false
+                                        chart.notes.forEachIndexed { index, note ->
+                                            if (tagPosition >= note.rawPos.first() && tagPosition <= note.rawPos.last()) {
+                                                //Now check latest offset to allowed
+                                                val anchorOffset = note.offsets[note.offsets.size-1]
+                                                if (note.type == 5) {
+                                                    if (note.offsets.last().rawPos == tagPosition) {
+                                                        isNoteFound = true
+                                                        //This tag should replace last offset
+                                                        val lastOffset = note.offsets.last()
+                                                        lastOffset.lane = nextLane - 1
+
+                                                        chart.notes[index].offsets.removeLast()
+                                                        chart.notes[index].offsets.add(lastOffset)
+                                                    } else if (anchorOffset.lane == currentLane) {
+                                                        isNoteFound = true
+                                                        //New offset data, should be added
+                                                        chart.notes[index].offsets.add(NoteOffset().apply {
+                                                            position = toBeatstarOffset(tagPosition.toInt(), chart.bpm)
+                                                            rawPos = tagPosition
+                                                            lane = nextLane
+                                                        })
+                                                    }
+                                                } else if (note.offsets.first().rawPos == tagPosition && note.lane == currentLane) {
+                                                    chart.notes[index].type = 5
+                                                    isNoteFound = true
+                                                }
+                                            }
+                                        }
+
+                                        if (!isNoteFound) {
+                                            chartConversionResult.exceptionList.add(packException(4,
+                                                chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim()))
+                                            continue
+                                        }
+                                    } catch (e: Exception) {
+                                        //Exception
+                                        chartConversionResult.exceptionList.add(packException(5,
+                                            chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim(), //Flag pos
+                                            chartLines[i].substring(chartLines[i].indexOf("E")+2).trim())) //Event
+                                        continue
+                                    }
                                 }
                                 else -> {
                                     //Swipe direction or unknown
@@ -775,10 +840,13 @@ class DeEncodingManager {
                 val offsetBytes = mutableListOf<Byte>()
                 //Offset key and bytes
                 "0D".asHex().forEach { offsetBytes.add(it) }
-                offset.toBytes().forEach { offsetBytes.add(it) }
-                //Lane key and bytes (in offset) (now the same as whole note, because Beatstar doesn't support multi-line notes)
+                offset.position.toBytes().forEach { offsetBytes.add(it) }
+                //Lane key and bytes (in offset) (if song type is 5 - take lane from the class)
                 "18".asHex().forEach { offsetBytes.add(it) }
-                offsetBytes.addAll((note.lane+1).toVarint().toMutableList())
+                if (note.type == 5)
+                    offsetBytes.addAll((offset.lane+1).toVarint().toMutableList()) //This is the curve hold
+                    else
+                    offsetBytes.addAll((note.lane+1).toVarint().toMutableList())
 
                 //Add done offset bytes to other
                 "0A".asHex().forEach { allOffsetsBytes.add(it) } //Its key
@@ -791,8 +859,8 @@ class DeEncodingManager {
                 allOffsetsBytes.addAll(note.swipe.toVarint().toMutableList())
             }
 
-            //Add done offsets to current note bytes
-            if (note.offsets.size > 1) "22".asHex().forEach { noteBytes.add(it) } else "1A".asHex().forEach { noteBytes.add(it) }
+            //Add done offsets to current note bytes (72 - key for rail holds, 22 - key for holds, 1A - key for normals)
+            if (note.type == 5) "72".asHex().forEach { noteBytes.add(it) } else if (note.offsets.size > 1) "22".asHex().forEach { noteBytes.add(it) } else "1A".asHex().forEach { noteBytes.add(it) }
             allOffsetsBytes.size.toVarint().forEach { noteBytes.add(it) }
             allOffsetsBytes.forEach { noteBytes.add(it) }
 
@@ -912,27 +980,9 @@ class DeEncodingManager {
         }
         return exception
     }
-    //Pack files to budnle
-    fun convertWavToBundle(outputFile: File, bytes: MutableList<Byte>): Boolean {
-        //Remove garbage from file (LIST)
-        if (byteArrayOf(bytes[36]).decodeToString() == "L") {
-            for (i in 36..69) {
-                bytes.removeAt(36)
-            }
-        }
-        //Insert JUNK data before DATA
-        "06000000023100004A554E4B0400000000000000".asHex().reversed().forEach { bytes.add(36, it) }
-        //Change PCM format to FE FF
-        bytes[20] = "FE".asHex()[0]
-        bytes[21] = "FF".asHex()[0]
-        //Change sizes
-        bytes.write4BytesInLittleEndian((bytes.size-8).toLong().toUInt32(), 4)
-        bytes.write4BytesInLittleEndian((24).toLong().toUInt32(), 16)
 
-        File("/storage/emulated/0/beatstar/BCTests/audio.wem").writeBytes(bytes.toByteArray())
-        return exportWemToBundle(bytes, outputFile)
-    }
-    fun packChartToBundle(bytes: MutableList<Byte>): MutableList<Byte> {
+    //Pack files to budnle
+    private fun packChartToBundle(bytes: MutableList<Byte>): MutableList<Byte> {
         //Header and other bundle things
         val fileData = BeatChartsUtils.FilesData.ChartData().chartFile.asHex().toMutableList()
 
@@ -965,43 +1015,65 @@ class DeEncodingManager {
 
         return fileData
     }
-    private fun exportWemToBundle(bytes: MutableList<Byte>, outputFile: File): Boolean {
+    fun exportWavToBundle(wemBytes: MutableList<Byte>, outputFile: File): Boolean {
+        //Convert wav to wem ===================================
+        //Find current header position
+        var headerEndPoint = 0
+        for (i in wemBytes.indices) {
+            if (byteArrayOf(wemBytes[i]).decodeToString() == "d" && byteArrayOf(wemBytes[i+1]).decodeToString() == "a" && byteArrayOf(wemBytes[i+2]).decodeToString() == "t" && byteArrayOf(wemBytes[i+3]).decodeToString() == "a") {
+                headerEndPoint = i+3
+                break
+            }
+        }
+        //Remove current header
+        repeat(headerEndPoint+1){ wemBytes.removeAt(0) }
+        //Write wem file header (that's all that needed to make it work!)
+        "52494646F845490257415645666D742018000000FEFF020044AC000010B102000400100006000000023100004A554E4B040000000000000064617461".asHex().reversed().forEach { wemBytes.add(0, it) }
+        //Change wem header sizes
+        wemBytes.write4BytesInLittleEndian((wemBytes.size-8).toLong().toUInt32(), 4)
+        wemBytes.write4BytesInLittleEndian((24).toLong().toUInt32(), 16)
+
+        //Make bundle ===================================
         //Header and other bundle things
-        var fileData: MutableList<Byte>? = BeatChartsUtils.FilesData.WemData().wemFile.asHex().toMutableList()
+        val bundleHeader: MutableList<Byte>? = BeatChartsUtils.FilesData.WemData().wemFile.asHex().toMutableList()
 
         //Uncompressed size of data block
-        fileData!!.write4BytesInBigEndian((4360+bytes.size+16).toLong().toUInt32(), 84)
+        bundleHeader!!.write4BytesInBigEndian((4360+wemBytes.size+16).toLong().toUInt32(), 84)
         //Compressed size of data block (the same)
-        fileData.write4BytesInBigEndian((4360+bytes.size+16).toLong().toUInt32(), 88)
+        bundleHeader.write4BytesInBigEndian((4360+wemBytes.size+16).toLong().toUInt32(), 88)
         //Size of uncompressed data of first asset (one in this file) (the same again)
-        fileData.write4BytesInBigEndian((4360+bytes.size+16).toLong().toUInt32(), 110)
+        bundleHeader.write4BytesInBigEndian((4360+wemBytes.size+16).toLong().toUInt32(), 110)
         //Size of uncompressed data of first asset (one in this file) (and again)
-        fileData.write4BytesInBigEndian((4360+bytes.size+16).toLong().toUInt32(), 159)
+        bundleHeader.write4BytesInBigEndian((4360+wemBytes.size+16).toLong().toUInt32(), 159)
 
         //Generate randomized id
         val newId = getRandomString(32)
         for (i in 122..153) {
-            fileData[i] = newId[153-i].toByte()
+            bundleHeader[i] = newId[153-i].toByte()
         }
 
         //Uncompressed data size with data header in asset
-        fileData.write4BytesInLittleEndian((12+bytes.size+16+68).toLong().toUInt32(), 2691)
+        bundleHeader.write4BytesInLittleEndian((12+wemBytes.size+16+68).toLong().toUInt32(), 2691)
         //Size of data (i don't know what exactly it is)
-        fileData.write4BytesInLittleEndian((bytes.size+68-16+28).toLong().toUInt32(), 4447)
+        bundleHeader.write4BytesInLittleEndian((wemBytes.size+68-16+28).toLong().toUInt32(), 4447)
         //Size of data
-        fileData.write4BytesInLittleEndian((bytes.size+16).toLong().toUInt32(), 4511)
+        bundleHeader.write4BytesInLittleEndian((wemBytes.size+16).toLong().toUInt32(), 4511)
         //Size of data but without header of asset data block i guess...
-        fileData.write4BytesInLittleEndian((bytes.size).toLong().toUInt32(), 4503)
+        bundleHeader.write4BytesInLittleEndian((wemBytes.size).toLong().toUInt32(), 4503)
 
         //Whole file size
-        fileData.write4BytesInBigEndian((fileData.size + bytes.size + 16).toLong().toUInt32(), 34)
+        bundleHeader.write4BytesInBigEndian((bundleHeader.size + wemBytes.size + 16).toLong().toUInt32(), 34)
 
-        outputFile.writeBytes(fileData.toByteArray())
-        fileData = null
-        outputFile.appendBytes(bytes.toByteArray())
-        val stupidList = mutableListOf<Byte>()
-        repeat(16) { stupidList.add(0) }
-        outputFile.appendBytes(stupidList.toByteArray())
+        val outputStream = BufferedOutputStream(FileOutputStream(outputFile.absoluteFile))
+        bundleHeader.forEach {
+            outputStream.write(it.toInt())
+        }
+        wemBytes.forEach {
+            outputStream.write(it.toInt())
+        }
+        repeat(300) { outputStream.write(0) }
+        outputStream.close()
+        //outputFile.appendBytes(bytes.toByteArray())
 
         return true
     }
@@ -1047,12 +1119,13 @@ class DeEncodingManager {
     fun packInfoToJson(chart: Chart, chartFiles: ChartFiles, viewModel: MainViewModel?): String {
         val infoMap = mapOf<String, Any>(
             Pair("title", chartFiles.info.title.trim()),
-            Pair("artist", if (viewModel != null && viewModel.offlineMode.value == false) chartFiles.info.artist.trim().trimEnd() + " @//" + viewModel.username.value else chartFiles.info.artist.trim().trimEnd() + " (BCOffline)"),
+            Pair("artist", if (viewModel != null && viewModel.offlineMode.value == false) chartFiles.info.artist.trim().trimEnd() + " //@" + viewModel.username.value else chartFiles.info.artist.trim().trimEnd() + " (BCOffline)"),
             Pair("id", BeatChartsUtils.Data.generateStringNumber(6)),
             Pair("difficulty", chartFiles.info.diff),
             Pair("bpm", chart.bpm),
             Pair("sections", 5),
-            Pair("maxScore", calculateMaxScore(chart, chartFiles.info.diff))
+            Pair("maxScore", calculateMaxScore(chart, chartFiles.info.diff)),
+            Pair("type", if (chart.isDeluxe) "Promode" else "Regular")
         )
         return JSONObject(infoMap).toString()
     }
@@ -1102,62 +1175,36 @@ class DeEncodingManager {
     }
 
     //Files export utils ======================================================================================================================================================
-    //Calculate maxScore (ref: https://github.com/ExternalAddress4401/Beatstar-Site/blob/main/src/lib/ChartUtils.ts) TODO fix this, this doesn't work here. DethoRhyne have explained what you should to do
+    //Calculate maxScore (DethoRhyne <3)
     private fun calculateMaxScore(chart: Chart, difficulty: Int): Int {
-        var score = 0
-        var noteLength = chart.notes.size + chart.notes.filter { note -> note.offsets.size > 0 && note.swipe != 0 }.size
-        score += if (noteLength >= 10) 10 * 250 else noteLength * 250
-        if (noteLength > 25) {
-            score += if (noteLength >= 25) (25 - 10) * 500 else (noteLength - 10) * 500
-        }
-        when (difficulty) {
-            1 -> {
-                if (noteLength > 25) {
-                    score += (noteLength - 25) * 750
-                }
-            }
-            3 -> {
-                if (noteLength > 25) {
-                    score += if (noteLength >= 50) (50 - 25) * 750 else (noteLength - 25) * 750
-                }
-                if (noteLength > 50) {
-                    score += (noteLength - 50) * 1000
-                }
-            }
-            4 -> {
-                if (noteLength > 25) {
-                    score += if (noteLength >= 50) (50 - 25) * 750 else (noteLength - 25) * 750
-                }
-                if (noteLength > 50) {
-                    score += if (noteLength > 100) (100 - 50) * 1000 else (noteLength - 50) * 1000
-                }
-                if (noteLength > 100) {
-                    score += (noteLength - 100) * 1250
-                }
+        var units = 0
+
+        //Get all notes count (swipe holds counts as 2 notes)
+        val notesCount = chart.notes.size + chart.notes.filter { note -> note.offsets.size > 1 && note.swipe != 0}.size
+
+        //Calculate (Loop because i'm stupid now)
+        for (i in 0 until notesCount) {
+            units += if (i in 11..25) { //x2 multiplier
+                10
+            } else if ((i in 26..50) || (i >= 51 && difficulty == 4)) { //x3 multiplier (Normal maximum)
+                15
+            } else if (i in 51..100 || (i >= 101 && difficulty == 3)) { //x4 multiplier (Hard maximum)
+                20
+            } else if (i >= 101) { //x5 (Only for extremes)
+                25
+            } else { //Less that 11
+                5
             }
         }
-        var holdTickCount = 0
-        chart.notes.forEach {
-            if (it.rawPos.size < 1) {
-                it.offsets.forEach { offset ->
-                    it.rawPos.add((offset * 192).toLong())
-                }
-            }
-            val noteLength = it.rawPos.reduce { acc, l -> acc + l }
-            if ((it.offsets.size > 1 && it.swipe != 0) && noteLength % 192/*chart.resolution*/.toLong() == 0L) { //TODO implement chart resolution here
-                holdTickCount--
-            }
-            holdTickCount += if (it.offsets.size == 1) 0 else
-                floor(
-                    floor(
-                        ((it.rawPos[0].toDouble() + noteLength.toDouble()) / chart.resolution) -
-                                floor(
-                                    it.rawPos[0].toDouble() / 192/*chart.resolution*/
-                                )
-                    )
-                ).toInt()
+
+        //Add all bonus ticks
+        chart.notes.filter { note -> note.offsets.size > 1 }.forEach {
+            var bonusTicks: Int = floor(it.offsets.last().position).toInt() - floor(it.offsets.first().position).toInt()
+            if (it.swipe != 0) bonusTicks -= 1
+            if (bonusTicks > 0) units += bonusTicks
         }
-        return score + holdTickCount * 50
+
+        return units * 50
     }
     //Convert mp3 to Wav
     fun convertMp3ToWav(fileInput: File, fileOutput: File): Boolean {

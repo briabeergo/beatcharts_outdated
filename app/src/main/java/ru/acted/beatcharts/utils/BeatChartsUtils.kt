@@ -7,6 +7,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.CountDownTimer
 import android.view.View
@@ -14,6 +15,7 @@ import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.RecyclerView
 import eightbitlab.com.blurview.BlurView
 import ru.acted.beatcharts.utils.BeatChartsUtils.Conversions.Companion.dp
 import ru.acted.beatcharts.utils.BeatChartsUtils.Conversions.Companion.px
@@ -32,6 +34,26 @@ class BeatChartsUtils {
             fun Context.hideKeyboard(view: View) {
                 val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                 inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+            }
+        }
+    }
+    class Other {
+        companion object {
+            //Decor view
+            class FirstItemSpacingDecoration(private val left: Int, private val top: Int, private val right: Int, private val bottom: Int) : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+                    super.getItemOffsets(outRect, view, parent, state)
+
+                    if (parent.getChildAdapterPosition(view) == 0) {
+                        outRect.top = top
+                        outRect.left = left
+                        outRect.right = right
+                        outRect.bottom = bottom
+                    }
+                }
+            }
+            fun modifyColorAlpha(color: Int, newAlpha: Int): Int {
+                return Color.argb(newAlpha, Color.red(color), Color.green(color), Color.blue(color))
             }
         }
     }
@@ -102,6 +124,10 @@ class BeatChartsUtils {
             fun Int.colorToHex(): String {
                 return String.format("%02x%02x%02x", Color.red(this), Color.green(this), Color.blue(this))
             }
+            fun Int.manipulateColor(factor: Float): Int {
+                val a = Color.alpha(this); val r = Math.round(Color.red(this) * factor); val g = Math.round(Color.green(this) * factor); val b = Math.round(Color.blue(this) * factor)
+                return Color.argb(a, Math.min(r, 255), Math.min(g, 255), Math.min(b, 255))
+            }
         }
     }
     class SimpleItem {
@@ -124,6 +150,24 @@ class BeatChartsUtils {
             fun View.upToDownAppear() {
                 this.visibility = View.VISIBLE
                 this.translationY = -100f
+                this.alpha = 0f
+                this.animate().let {
+                    it.duration = 250
+                    it.interpolator = DecelerateInterpolator(2.0f)
+                    it.translationY(0f)
+                    it.alpha(1f)
+                    it.setListener(object : AnimatorListener {
+                        override fun onAnimationStart(animation: Animator) {}
+                        override fun onAnimationEnd(animation: Animator) {}
+                        override fun onAnimationCancel(animation: Animator) {}
+                        override fun onAnimationRepeat(animation: Animator) {}
+                    })
+                    it.start()
+                }
+            }
+            fun View.downToUpAppear() {
+                this.visibility = View.VISIBLE
+                this.translationY = 100f
                 this.alpha = 0f
                 this.animate().let {
                     it.duration = 250

@@ -2494,40 +2494,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <ImageView
             android:id="@+id/bgArt"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginStart="-15dp"
-            android:layout_marginTop="-15dp"
-            android:layout_marginEnd="-15dp"
+            android:layout_marginStart="-14dp"
+            android:layout_marginTop="-14dp"
+            android:layout_marginEnd="-14dp"
             android:layout_marginBottom="-16dp"
-            android:alpha="0.5"
-            android:orientation="horizontal"
             android:rotation="-0.3"
+            android:scaleType="centerCrop"
+            android:src="@drawable/card_colored_bg_def"
             app:layout_constraintBottom_toBottomOf="@+id/songArtworkCard"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"></LinearLayout>
-
-        <eightbitlab.com.blurview.BlurView
-            android:id="@+id/bgBlur"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="-15dp"
-            android:layout_marginTop="-15dp"
-            android:layout_marginEnd="-15dp"
-            android:layout_marginBottom="-16dp"
-            android:orientation="horizontal"
-            android:rotation="-0.3"
-            app:layout_constraintBottom_toBottomOf="@+id/songArtworkCard"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"></eightbitlab.com.blurview.BlurView>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
             android:id="@+id/bgColor"
@@ -2547,6 +2528,54 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"></LinearLayout>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/artworkBarrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="right"
+            app:constraint_referenced_ids="linearLayout14" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/deluxeHighlight"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="-3dp"
+            android:layout_marginEnd="-20dp"
+            android:layout_marginBottom="-3dp"
+            android:alpha="0.5"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/chartTitle"
+            app:layout_constraintEnd_toEndOf="@+id/chartTitle"
+            app:layout_constraintStart_toStartOf="@+id/songArtCenter"
+            app:layout_constraintTop_toTopOf="@+id/chartTitle">
+
+            <LinearLayout
+                android:id="@+id/linearLayout27"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="-10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="-10dp"
+                android:background="@color/deluxe"
+                android:orientation="horizontal"
+                android:rotation="15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="-10dp"
+                android:background="@color/deluxe"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/linearLayout27"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/headerTitle"
@@ -2570,8 +2599,8 @@
 
             <LinearLayout
                 android:id="@+id/exitPublicationButton"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="274dp"
+                android:layout_height="107dp"
                 android:layout_marginStart="-30dp"
                 android:layout_marginTop="-30dp"
                 android:layout_marginEnd="-20dp"
@@ -2635,6 +2664,7 @@
         </androidx.cardview.widget.CardView>
 
         <LinearLayout
+            android:id="@+id/linearLayout14"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/card_outline_white"
@@ -2647,20 +2677,23 @@
 
         <EditText
             android:id="@+id/chartTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginTop="20dp"
             android:background="@color/trans"
-            android:ems="10"
             android:fontFamily="@font/googlesans_medium"
             android:hint="@string/chart_title"
             android:inputType="text"
             android:textColor="@color/white"
             android:textColorHint="#79FFFFFF"
             android:textSize="20sp"
+            app:barrierDirection="right"
+            app:layout_constrainedHeight="false"
+            app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/songArtworkCard"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/linearLayout14"
             app:layout_constraintTop_toBottomOf="@+id/headerTitle" />
 
         <EditText

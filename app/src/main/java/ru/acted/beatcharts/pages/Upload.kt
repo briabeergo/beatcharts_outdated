@@ -3,7 +3,11 @@ package ru.acted.beatcharts.pages
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.BlurMaskFilter
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.widget.addTextChangedListener
@@ -25,6 +30,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.palette.graphics.Palette
 import com.google.firebase.analytics.FirebaseAnalytics
 import eightbitlab.com.blurview.RenderScriptBlur
+import jp.wasabeef.blurry.Blurry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONArray
@@ -108,6 +114,15 @@ class UploadPage : Fragment() {
         binding.diffsLayout.post {
             (binding.normalButton.layoutParams as ViewGroup.MarginLayoutParams).setMargins((binding.songArtworkIcon.measuredWidth/2)+25, 0, 0, 0)
             binding.normalButton.requestLayout()
+        }
+
+        //Set dynamic titile width
+        binding.apply {
+            chartArtist.post {
+                chartTitle.layoutParams = (chartTitle.layoutParams as ConstraintLayout.LayoutParams).apply {
+                    matchConstraintMaxWidth = chartArtist.width
+                }
+            }
         }
 
         //Inits
@@ -307,10 +322,6 @@ class UploadPage : Fragment() {
 
         //Setup blurs
         val windowBackground = requireActivity().window.decorView.background
-        binding.bgBlur.setupWith(binding.bgArt)
-            .setFrameClearDrawable(windowBackground)
-            .setBlurRadius(20f)
-
         val rootView2 = requireActivity().window.decorView.findViewById<View>(android.R.id.content) as ViewGroup
         binding.uploadPagesBlur.setupWith(rootView2)
             .setFrameClearDrawable(windowBackground)
@@ -614,6 +625,7 @@ class UploadPage : Fragment() {
 
                     requireActivity().runOnUiThread {
                         cardsFeedback(file.name, 103)
+                        postAddingChart()
                         if (filesOrder.size > 0) {
                             currentFileCheckOrder == 0
                             filesOrder.removeFirst()
@@ -645,6 +657,7 @@ class UploadPage : Fragment() {
                     if (chart.bpm == 0) chart.bpm = bpm
                     requireActivity().runOnUiThread {
                         cardsFeedback(file.name, 103)
+                        postAddingChart()
                         if (filesOrder.size > 0) {
                             currentFileCheckOrder == 0
                             filesOrder.removeFirst()
@@ -661,7 +674,21 @@ class UploadPage : Fragment() {
             }
         }
 
+
         return success
+    }
+    private fun postAddingChart() {
+        //Post adding operations
+        if (chart.notes.size > 0) {
+            //Set deluxe type if there is any rail hold
+            if (chart.notes.filter { it.type == 5 }.size > 0) {
+                chart.isDeluxe = true
+                binding.deluxeHighlight.visibility = View.VISIBLE
+            } else {
+                chart.isDeluxe = false
+                binding.deluxeHighlight.visibility = View.GONE
+            }
+        }
     }
     //Show errors with chart file
     private fun showErrorsWithChart(conversionResult: DeEncodingManager.ChartConversionResult, filename: String){
@@ -725,10 +752,15 @@ class UploadPage : Fragment() {
     private fun updateHeader(image: Bitmap) {
         val color = Palette.from(image).generate().getDominantColor(resources.getColor(R.color.background_level_a))
         colors.setColors(color)
-        binding.artworkPreview.setImageBitmap(image)
-        binding.songArtworkIcon.setImageBitmap(image)
-        binding.bgArt.background = image.toDrawable(resources)
-        binding.bgColor.setBackgroundColor(color.toInt())
+        binding.apply {
+            artworkPreview.setImageBitmap(image)
+            songArtworkIcon.setImageBitmap(image)
+            bgColor.setBackgroundColor(color.toInt())
+
+            //Make blurred image and apply it to background
+            Blurry.with(context).radius(50).from(image).into(bgArt)
+        }
+
 
         //Set header text colors
         if (isColorDark(color)) {
@@ -996,7 +1028,7 @@ class UploadPage : Fragment() {
             //Set information
             binding.apply {
                 notesCount.text = chart.notes.size.toString()
-                val chartSeconds = ((chart.notes[chart.notes.size-1].offsets[0]*192)/chart.bpm/32*10).toFloat()
+                val chartSeconds = ((chart.notes[chart.notes.size-1].offsets[0].position*192)/chart.bpm/32*10).toFloat()
                 chartDuration.text = "${if (chartSeconds.toInt()/60 < 10) "0${chartSeconds.toInt()/60}" else chartSeconds.toInt()/60}:${if (chartSeconds.toInt()%60 < 10) "0${chartSeconds.toInt()%60}" else chartSeconds.toInt()%60}.${(chartSeconds*10%10).toInt()}"
                 chartBpm.text = chart.bpm.toString()
             }
@@ -1302,7 +1334,22 @@ class UploadPage : Fragment() {
             //TODO сделать получение данных о доступных тегах и вообще их применять и т.д.
         }
         binding.saveLocalButton.setOnClickListener {
-            writeFiles(false)
+            var problem = false
+            binding.apply {
+                if (chartTitle.text.toString() == "") {
+                    problem = true
+                    chartTitle.setError(resources.getString(R.string.cant_be_empty))
+                }
+
+                if (chartArtist.text.toString() == "") {
+                    problem = true
+                    chartArtist.setError(resources.getString(R.string.cant_be_empty))
+                }
+            }
+
+            if (!problem) {
+                writeFiles(false)
+            }
         }
     }
     private var currentFolder = ""
@@ -1339,10 +1386,10 @@ class UploadPage : Fragment() {
                 var audioBundle: ByteArray? = null
                 if (!chartFiles.isAudioCompressed) {
                     //Write mp3 again (to allow user to delete it after adding and before converting)
-                    originalFile.writeBytes(chartFiles.audioBytes.toByteArray())
-                    DeEncodingManager().convertMp3ToWav(originalFile, convertedFile).let {
-                        if (it) {
-                            return@let DeEncodingManager().convertWavToBundle(File("${tempFolder}audio.bundle"), convertedFile.readBytes().toMutableList())
+                    originalFile.writeBytes(chartFiles.audioBytes.toByteArray()); chartFiles.audioBytes.clear()
+                    DeEncodingManager().convertMp3ToWav(originalFile, convertedFile).let { isSuccessfull ->
+                        if (isSuccessfull) {
+                            return@let DeEncodingManager().exportWavToBundle(convertedFile.readBytes().toMutableList(), File("${tempFolder}audio.bundle"))
                         } else {
                             isConverterSuccessfully = false
                             badFiles.add(originalFile.name)
@@ -1364,13 +1411,14 @@ class UploadPage : Fragment() {
                     File("${tempFolder}artwork.bundle").writeBytes(chartFiles.artworkBytes.toByteArray())
                     //Config file
                     File("${tempFolder}config.json").writeText(configJson)
-                    //Remove temps
+                    //Remove audio temps
                     convertedFile.delete()
                     originalFile.delete()
 
+                    //Copy chart temps and remove it
                     File(tempFolder).let {
                         it.copyRecursively(File("/storage/emulated/0/beatstar/songs/$currentFolder"), true)
-                        //it.deleteRecursively()
+                        it.deleteRecursively()
                     }
 
                     //Log this to firebase
@@ -1380,6 +1428,7 @@ class UploadPage : Fragment() {
                     bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, chartFiles.info.title)
                     firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle)
 
+                    //Upload chart if needed
                     requireActivity().runOnUiThread { closeDialogs(); viewModel.showNotif(resources.getString(R.string.chart_created_locally)) }
                     if (makeUpload) {
                         //TODO произвести загрузку
