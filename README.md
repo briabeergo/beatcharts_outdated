@@ -5,11 +5,6 @@ An application for the Beatstar modding community. Very unfinished, but you are 
 - iconscout (icons);
 - all using libraries.
 
-## Current issues and bugs
-- Deluxes are not supported to be converted;
-- Score is not calculated correctly;
-- Memory leaks during conversion.
-
 # Short introduction to the classes
 Utilities and tools:
 - Class BeatChartsUtils: Contains everything that can be helpful in the application or have specific data. It's subclasses:
