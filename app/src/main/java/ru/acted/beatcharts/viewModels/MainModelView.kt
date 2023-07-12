@@ -25,6 +25,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     val itemInteractionId = MutableLiveData<Int>()
     val pubProgressInteraction = MutableLiveData<Int>()
 
+    //Temp stuff TODO remove it
+    val songIdForPreview = MutableLiveData<Int>()
+
     init {
         notifIndicator.value = 0 //0 - undefined, 1 - show, 2 - hide
         username.value = "unknown"
@@ -34,6 +37,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         pubProgressInteraction.value = 0
         offlineMode.value = false
         notifText.value = ""
+        songIdForPreview.value = 0
     }
 
     fun showNotif(text: String) {notifText.value = text; notifIndicator.value = 1}

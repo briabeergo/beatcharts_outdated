@@ -190,10 +190,10 @@ Java_ru_acted_beatcharts_DeEncodingManager_encodeArtworkBytes(JNIEnv *env, jobje
     /*jbyteArray jEncodedImage = env->NewByteArray(sizeof(encoded));
     env->SetByteArrayRegion(jEncodedImage, 0, sizeof(encoded), reinterpret_cast<const jbyte *>(encoded));*/
 
-    ofstream foutenc;
+    /*ofstream foutenc;
     foutenc.open(R"(/storage/emulated/0/beatstar/BCTests/textureC.dat)", ios::binary | ios::out);
     foutenc.write((char*)&encoded, sizeof(encoded));
-    foutenc.close();
+    foutenc.close();*/
 
     return uint8ArrayToJbyteArray(env, encoded, 131072);
 }

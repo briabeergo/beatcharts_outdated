@@ -12,17 +12,21 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import ru.acted.beatcharts.R
 import ru.acted.beatcharts.dataProcessors.SongManager
 import ru.acted.beatcharts.types.Song
+import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.openFromCenter
 import ru.acted.beatcharts.viewModels.MainViewModel
+import java.lang.invoke.ConstantCallSite
 
 class SongsRecyclerViewAdapter(private val song: List<Song>, private val reso: Resources, private val context: Context, private val lifecycleOwner: LifecycleOwner, private val viewModel: MainViewModel): RecyclerView.Adapter<SongsRecyclerViewAdapter.MyViewHolder>() {
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val songCardHolder: CardView = itemView.findViewById(R.id.songCardHolder)
         val songRoot: CardView = itemView.findViewById(R.id.songRoot)
         val charter: TextView = itemView.findViewById(R.id.charter)
         val songTitle: TextView = itemView.findViewById(R.id.songTitle)
@@ -32,6 +36,9 @@ class SongsRecyclerViewAdapter(private val song: List<Song>, private val reso: R
         val difficultyIcon: ImageView = itemView.findViewById(R.id.difficultyIcon)
         val songArtwork: ImageView = itemView.findViewById(R.id.songArtwork)
         val songArtGradient: LinearLayout = itemView.findViewById(R.id.songArtGradient)
+
+        //Deluxe marker
+        val deluxeMarker: ConstraintLayout = itemView.findViewById(R.id.deluxeMark)
 
         //Buttons
         val textViewH: TextView = itemView.findViewById(R.id.textViewH)
@@ -113,7 +120,14 @@ class SongsRecyclerViewAdapter(private val song: List<Song>, private val reso: R
             holder.imageViewH.setImageResource(R.drawable.eye)
         }
 
+        //Bind deluxe mark
+        holder.deluxeMarker.visibility = if (currentSong.isDeluxe) View.VISIBLE else View.GONE
+
         //Bind listeners
+        holder.songCardHolder.setOnClickListener {
+            viewModel.songIdForPreview.value = position
+            viewModel.changeDialogTo(7)
+        }
         if (viewModel.offlineMode.value!!) {
             holder.inCommunityButton.visibility = View.GONE
         } else holder.inCommunityButton.setOnClickListener {

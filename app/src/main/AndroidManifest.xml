@@ -12,6 +12,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:exported="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -20,6 +21,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BeatCharts">
+        <activity
+            android:name=".TestAudioActivity"
+            android:exported="false"
+            android:label="@string/title_activity_test_audio"
+            android:theme="@style/Theme.BeatCharts" />
         <activity
             android:name=".dataProcessors.ScoreHandler"
             android:exported="true"

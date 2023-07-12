@@ -13,13 +13,13 @@
     <string name="nickname_id_hint">Start typing to see your ID</string>
     <string name="general">General</string>
     <string name="additional">Additional</string>
-    <string name="bio">About yourself...</string>
+    <string name="bio">About yourself... (500 characters max)</string>
     <string name="add_discord">Add Discord</string>
-    <string name="add_vk">Add VK</string>
+    <string name="add_yt">Add YouTube</string>
     <string name="add_telegram">Add Telegram</string>
     <string name="show_email">Tap to show your email to everyone</string>
     <string name="hide_email">Tap to hide your email from everyone</string>
-    <string name="terms_text">I have read and will follow the rules of conduct and publication of content in the community</string>
+    <string name="terms_text">I have read and will follow terms of use</string>
     <string name="openTOF">Read</string>
     <string name="checking">Checking...</string>
     <string name="invalid_email">Invalid email</string>
@@ -29,15 +29,15 @@
     <string name="chart_editor_description">Create, edit and instantly upload charts to the community on your Android device!</string>
     <string name="chart_editor_hint">The editor will work with .chart files and have a simple interface for creating charts for Beatstar. Development will begin as soon as the final version of BeatCharts is released.</string>
     <string name="invalid_nickname">Nickname must be between 3 and 12 characters. Only latin characters, nums and space</string>
-    <string name="invalid_password">The password must be between 3 and 20 characters. Only latin characters and numbers</string>
+    <string name="invalid_password">The password must be between 6 and 20 characters. Only latin characters and numbers</string>
     <string name="invalid_bio">Too much characters (500 is max)</string>
     <string name="terms_needed">Read and accept the Terms Of Use</string>
     <string name="registration_error">Registration error</string>
     <string name="login_error">Login error</string>
     <string name="invalid_login_data">Invalid login or password</string>
     <string name="discord_example">MyName#0000</string>
-    <string name="vk_example">my_profile_link</string>
-    <string name="telegram_example">my_username</string>
+    <string name="yt_example">youtu.be/my_channel</string>
+    <string name="telegram_example">\@my_username</string>
     <string name="save">Save</string>
     <string name="leave_empty_for_removing">Leave empty to remove</string>
     <string name="cant_contain_spaces">This field can\'t contain spaces</string>
@@ -193,7 +193,7 @@
     <string name="conversions">Converting</string>
     <string name="processing_image">Processing your image...</string>
     <string name="processing_chart_bundle">Processing chart bundle...</string>
-    <string name="loading">Loading</string>
+    <string name="loading">Loading...</string>
     <string name="file_number">File %1$s of %2$s</string>
     <string name="colors">Colors</string>
     <string name="auto">Auto</string>
@@ -228,8 +228,40 @@
     <string name="score_sync_promo_text">Login to your account and compete with other players by synchronising your score on custom charts</string>
     <string name="service_unavailable">Service unavailable</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="i_love_you_guys">Hello, dear friends. Thank you for your interest in beatcharts! This message is not related to the project, but is of a personal nature. You may find such a message rather embarrassing or inappropriate, but I need this to put an obvious point on everything and explain everything before the end. I did this app not just to contribute to the community, but because I enjoyed working together with people I appreciate. I liked making an impression and getting real opinions, I liked working together. Unfortunately for me, fate had it quite differently. I have lost people of value to me before, for the dumbest of reasons of miscommunication, but now I have lost someone who cannot be replaced in any way, and his influence on me and my development is irreplaceable. I still have people who are dear to me, but this is completely different. The site actedev.ru will stop working in the winter of 2023, if you\'re interested. I wish you good luck and a thriving community, and also, guys, never be 100% sure of anyone, even if you seem to understand each other. Thanks for your endless support and nice words, including the wishes in the thread after my last post! If you want to continue working on this project and get the source code together with the concepts, you can write to masunyabeegost#2956 on Discord (I\'m not the only one who has access to that account). If you do decide to do this, I hope you can do something incredible!  Translated with www.DeepL.com/Translator (free version)</string>
+    <string name="error_text">Error: %1$s</string>
+    <string name="creating_account">Creating account...</string>
+    <string name="can_be_changed_later">Can be changed later</string>
+    <string name="loc">EN</string>
+    <string name="tos">Terms Of Use</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="guest">Guest</string>
+    <string name="tap_to_login">Login account</string>
+    <string name="account_features">Log in to your account to get all the BeatCharts features:\n- Downloading and publishing user charts;\n- Participating in various events, including PVP competitions;\n- Synchronizing your score on custom charts and competing against other players!</string>
+    <string name="error_has_occurred">An error has occurred</string>
+    <string name="cant_load_user">Can\'t load user data</string>
+    <string name="open_profile">Open profile</string>
+    <string name="user">User</string>
+    <string name="no_badges">No badges yet...</string>
+    <string name="cant_be_empty">Can\'t be empty</string>
+    <string name="user_doesnt_exist">User doesn\'t exist...</string>
+    <string name="cant_load_badges">Can\'t load badges...</string>
+    <string name="user_info">Info</string>
+    <string name="user_empty_bio">%1$s doesn\'t have much to say</string>
+    <string name="title_activity_test_audio">TestAudioActivity</string>
+    <string name="chart_preview_loading">We take a thorough look at the chart...</string>
+    <string name="charters_preview">%1$s\'s chart preview</string>
+    <string name="tap_anywhere_to_close">Tap anywhere to close</string>
+    <string name="preview_running">"preview  "</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="early_feature">Early version</string>
+    <string name="your_final_result">Your final result is...</string>
+    <string name="medal_diamond">Diamond</string>
+    <string name="medal_platinum">Platinum</string>
+    <string name="medal_gold">Gold</string>
+    <string name="medal_none">No medal</string>
+    <string name="medal_diamond_perfect">Diamond Perfect</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

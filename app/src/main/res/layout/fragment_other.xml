@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".pages.Other" >
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/profileHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="25dp"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        app:cardBackgroundColor="@color/background_level_a"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ru.acted.beatcharts.views.AvatarView
+                android:id="@+id/avatarView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="-3dp"
+                android:layout_marginBottom="-3dp"
+                app:avatarBackgroundColor="@color/background_level_b"
+                app:layout_constraintBottom_toBottomOf="@+id/userAction"
+                app:layout_constraintDimensionRatio="1:1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/userName" />
+
+            <TextView
+                android:id="@+id/userName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
+                android:singleLine="true"
+                android:text="@string/guest"
+                android:textColor="@color/foreground_active"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toTopOf="@+id/userAction"
+                app:layout_constraintEnd_toStartOf="@+id/imageView32"
+                app:layout_constraintStart_toEndOf="@+id/avatarView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/userAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="12dp"
+                android:alpha="0.8"
+                android:fontFamily="@font/googlesans_regular"
+                android:singleLine="true"
+                android:text="@string/tap_to_login"
+                android:textColor="@color/foreground_active"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toTopOf="@+id/profileFeaturesHint"
+                app:layout_constraintEnd_toStartOf="@+id/imageView32"
+                app:layout_constraintStart_toStartOf="@+id/userName"
+                app:layout_constraintTop_toBottomOf="@+id/userName" />
+
+            <ImageView
+                android:id="@+id/imageView32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/angle_right"
+                app:layout_constraintBottom_toBottomOf="@+id/userAction"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/userName"
+                app:tint="@color/foreground_active" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profileFeaturesHint"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="-30dp"
+                    android:layout_marginEnd="-30dp"
+                    android:layout_marginBottom="-30dp"
+                    android:background="@color/background_level_b"
+                    android:orientation="horizontal"
+                    android:rotation="-0.5"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+                <TextView
+                    android:id="@+id/textView67"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:text="@string/account_features"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

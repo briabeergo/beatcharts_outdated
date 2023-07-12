@@ -2,16 +2,16 @@ package ru.acted.beatcharts.types
 
 data class Note (
     var type: Int = 0,
-    var offsets: MutableList<Float> = mutableListOf(),
+    var offsets: MutableList<NoteOffset> = mutableListOf(),
     var lane: Int = 0,
     var swipe: Int = 0,
     var size: Int = 0,
     var rawPos: MutableList<Long> = mutableListOf(),
 )
 
-//TODO implement note offset class for deluxe support
 data class NoteOffset (
-    var offset: Float = 0F,
+    var position: Float = 0F,
+    var rawPos: Long = 0L,
     var lane: Int = 0,
 )
 
@@ -33,6 +33,7 @@ data class Effect (
 data class Chart (
     var resolution: Int = 192, //Default value is 192
     var bpm: Int = 0,
+    var isDeluxe: Boolean = false,
     var notes: MutableList<Note> = mutableListOf(),
     var sections: MutableList<Float> = mutableListOf(),
     var perfects: MutableList<Perfect> = mutableListOf(),

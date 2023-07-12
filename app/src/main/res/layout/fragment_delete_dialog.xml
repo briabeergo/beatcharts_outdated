@@ -218,18 +218,6 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
-                        android:id="@+id/songArtGradient"
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_marginStart="-120dp"
-                        android:orientation="vertical"
-                        app:layout_constraintBottom_toBottomOf="@+id/songArtwork"
-                        app:layout_constraintEnd_toEndOf="@+id/songCardColor"
-                        app:layout_constraintEnd_toStartOf="@+id/songCardColor"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
-
-                    <LinearLayout
                         android:id="@+id/songCardColor"
                         android:layout_width="0dp"
                         android:layout_height="0dp"
@@ -240,11 +228,68 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/songArtGradient"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="-20dp"
+                        android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="@+id/songArtwork"
+                        app:layout_constraintEnd_toEndOf="@+id/songCardColor"
+                        app:layout_constraintEnd_toStartOf="@+id/songCardColor"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/deluxeMark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="-30dp"
+                        android:layout_marginEnd="-40dp"
+                        android:layout_marginBottom="-30dp"
+                        android:rotation="10"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="10dp"
+                            android:layout_height="0dp"
+                            android:alpha="0.1"
+                            android:background="@color/deluxe"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/linearLayout31"
+                            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout31"
+                            android:layout_width="10dp"
+                            android:layout_height="0dp"
+                            android:alpha="0.3"
+                            android:background="@color/deluxe"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/linearLayout30"
+                            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/linearLayout30"
+                            android:layout_width="60dp"
+                            android:layout_height="0dp"
+                            android:alpha="0.5"
+                            android:background="@color/deluxe"
+                            android:orientation="horizontal"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
                     <TextView
                         android:id="@+id/charter"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="60dp"
+                        android:layout_marginStart="80dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="25dp"
                         android:alpha="0.6"
@@ -296,7 +341,7 @@
                         android:id="@+id/songTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="60dp"
+                        android:layout_marginStart="80dp"
                         android:layout_marginEnd="4dp"
                         android:fontFamily="@font/googlesans_medium"
                         android:singleLine="true"
@@ -313,7 +358,7 @@
                         android:id="@+id/songArtist"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="60dp"
+                        android:layout_marginStart="80dp"
                         android:layout_marginEnd="25dp"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/googlesans_regular"

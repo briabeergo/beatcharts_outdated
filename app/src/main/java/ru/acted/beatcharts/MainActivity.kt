@@ -9,8 +9,6 @@ import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.widget.doOnTextChanged
-import eightbitlab.com.blurview.RenderScriptBlur
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.backendless.Backendless
@@ -20,9 +18,18 @@ import android.os.StrictMode.ThreadPolicy
 import android.transition.AutoTransition
 import android.transition.TransitionManager
 import android.view.animation.OvershootInterpolator
+import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.acted.beatcharts.databinding.ActivityMainBinding
 import ru.acted.beatcharts.dialogs.UpdateDialog
 import ru.acted.beatcharts.pages.Secret
@@ -39,23 +46,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var scaleOpen: Animation
     private var addingLink = 0
     private var addedDS = "none"
-    private var addedVK = "none"
+    private var addedYT = "none"
     private var addedTG = "none"
-    private val checkNicknameTimer: CountDownTimer = object: CountDownTimer(2000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-        }
-        override fun onFinish() {
-            //TODO: id check
-            if (binding.editTextNickname.text.toString() != "") binding.textView10.text = "Availability is unknown"
-        }
-    }.start()
 
     lateinit var binding: ActivityMainBinding
     lateinit var viewModel: MainViewModel
 
+    private lateinit var auth: FirebaseAuth
+
+    private var bcIconSize = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        auth = Firebase.auth
 
         StrictMode.setThreadPolicy(ThreadPolicy.Builder().permitAll().build())
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -67,8 +70,8 @@ class MainActivity : AppCompatActivity() {
         val alphaLight: Animation = AnimationUtils.loadAnimation(this, R.anim.alpha_light)
         scaleOpen = AnimationUtils.loadAnimation(this, R.anim.alpha_scale_open)
 
-        //Just skip login page if mode is offline
-        if (getSharedPreferences("app", Context.MODE_PRIVATE)?.getBoolean("isOffline", false) == true) {
+        //Just skip login page if mode is offline OR if user have logged in
+        if (getSharedPreferences("app", Context.MODE_PRIVATE)?.getBoolean("isOffline", false) == true || auth.currentUser != null) {
             startActivity(Intent(this, CommunityActivity::class.java))
             finish()
         }
@@ -82,12 +85,16 @@ class MainActivity : AppCompatActivity() {
             .setBlurRadius(5f)
 
         binding.apply {
+            //Make beatstar's icon size fixed
+            imageView.post {
+                bcIconSize = imageView.height
+            }
+
             signInButton.setOnClickListener(){
-                //if (editTextTextEmailAddress.text.toString() != "" && editTextPassword.text.toString() != "") loginInAccount()
-                if (editTextTextEmailAddress.text.toString() == "n3i2314155" && editTextPassword.text.toString() == "228227") continueOverlay.visibility = View.VISIBLE
-                else if (editTextTextEmailAddress.text.toString() == "d" && editTextPassword.text.toString() == "1") startActivity(Intent(this@MainActivity, CommunityActivity::class.java))
-                //else if (editTextTextEmailAddress.text.toString() == "d" && editTextPassword.text.toString() == "2") continueOverlay.visibility = View.VISIBLE
-                else showCustomDialog(resources.getString(R.string.login_error), resources.getString(R.string.login_is_disabled))
+                if (editTextTextEmailAddress.text.toString() == "n3i2314155" && editTextPassword.text.toString() == "228227") continueOverlay.visibility = View.VISIBLE //Vova Secret
+                //else if (editTextTextEmailAddress.text.toString() == "d" && editTextPassword.text.toString() == "2") continueOverlay.visibility = View.VISIBLE //Open chart upload page
+                else if (editTextTextEmailAddress.text.toString() != "" && editTextPassword.text.toString() != "") loginInAccount()
+                else showCustomDialog(resources.getString(R.string.login_error), "Empty login or password?")
             }
 
             createAnAccountButton.setOnClickListener(){
@@ -170,12 +177,12 @@ class MainActivity : AppCompatActivity() {
                         2 -> {
                             //Add VK
                             if (editTextAddingLink.text.toString() == ""){
-                                textView13.setText(R.string.add_vk)
-                                addedVK = "none"
+                                textView13.setText(R.string.add_yt)
+                                addedYT = "none"
                             }
                             else{
-                                addedVK = editTextAddingLink.text.toString()
-                                textView13.text = addedVK
+                                addedYT = editTextAddingLink.text.toString()
+                                textView13.text = addedYT
                             }
                         }
                         3 -> {
@@ -212,7 +219,7 @@ class MainActivity : AppCompatActivity() {
                 addLinkDialogShow()
             }
 
-            addVKButton.setOnClickListener(){
+            addYTButton.setOnClickListener(){
                 addingLink = 2
                 addLinkDialogShow()
             }
@@ -225,9 +232,9 @@ class MainActivity : AppCompatActivity() {
             submitAccountCreation.setOnClickListener(){
                 var problem = false
 
-                showCustomDialog(resources.getString(R.string.registration_error), resources.getString(R.string.reg_is_desabled))
+                //showCustomDialog(resources.getString(R.string.registration_error), resources.getString(R.string.reg_is_desabled))
 
-                /*if (editTextTextEmailAddressREG.text.toString() == "" || !android.util.Patterns.EMAIL_ADDRESS.matcher(editTextTextEmailAddressREG.text.toString()).matches()){
+                if (editTextTextEmailAddressREG.text.toString() == "" || !android.util.Patterns.EMAIL_ADDRESS.matcher(editTextTextEmailAddressREG.text.toString()).matches()){
                     problem = true
                     editTextTextEmailAddressREG.error = resources.getString(R.string.invalid_email)
                 }
@@ -239,7 +246,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 val passwordRegex = Regex("[a-zA-Z0-9]+")
-                if (editTextPasswordREG.text.toString().length < 3 || editTextPasswordREG.text.toString().length > 20 || !editTextPasswordREG.text.toString().matches(passwordRegex)){
+                if (editTextPasswordREG.text.toString().length < 6 || editTextPasswordREG.text.toString().length > 20 || !editTextPasswordREG.text.toString().matches(passwordRegex)){
                     problem = true
                     editTextPasswordREG.error = resources.getString(R.string.invalid_password)
                 }
@@ -251,24 +258,24 @@ class MainActivity : AppCompatActivity() {
 
                 if (!checkBox.isChecked) {
                     problem = true
-                    Toast.makeText(this, resources.getText(R.string.terms_needed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@MainActivity, resources.getText(R.string.terms_needed), Toast.LENGTH_SHORT).show()
                 }
 
-                if (!problem) registerAnAccount()*/
+                if (!problem) registerAnAccount()
             }
 
             openTOF.setOnClickListener(){
+                val db = Firebase.firestore
 
-            }
-
-            editTextNickname.doOnTextChanged { _, _, _, _ ->
-                if (editTextNickname.text.toString() != "") {
-                    textView10.setText(R.string.checking)
-                    checkNicknameTimer.cancel()
-                    checkNicknameTimer.start()
-                } else {
-                    checkNicknameTimer.cancel()
-                    textView10.setText(R.string.nickname_id_hint)
+                db.collection("status").document("tos").get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        when (resources.getString(R.string.loc)) {
+                            "EN" -> showCustomDialog(resources.getString(R.string.tos), it.result.get("textEn") as String)
+                            "RU" -> showCustomDialog(resources.getString(R.string.tos), it.result.get("textRu") as String)
+                        }
+                    } else {
+                        showCustomDialog("Oops", "Can't load TOS :(. Error: ${it.exception}")
+                    }
                 }
             }
 
@@ -301,23 +308,25 @@ class MainActivity : AppCompatActivity() {
             updButtonStart.clone(this@MainActivity, R.layout.update_button_start)
             updButtonEnd.clone(updateNotifContainer)
             updButtonStart.applyTo(updateNotifContainer)
-            //checkForUpdates() TODO implement update check here too :)
+            checkForUpdates()
         }
     }
 
     override fun onBackPressed() {
-        if (!isSignInNow){
-            constraintSignIn.applyTo(binding.root)
-            isSignInNow = !isSignInNow
+        if (isBackAllowed) {
+            if (!isSignInNow){
+                constraintSignIn.applyTo(binding.root)
+                isSignInNow = !isSignInNow
+            }
+            else super.onBackPressed()
         }
-        else super.onBackPressed()
     }
 
     private val updButtonEnd = ConstraintSet()
     private var tags: Map<String, Map<String, *>>? = null
     private var changelogs: Map<String, String>? = null
     private var ver = ""
-    /*private fun checkForUpdates() {
+    private fun checkForUpdates() {
         val db = Firebase.firestore
         db.collection("status").document("app").get().addOnCompleteListener {
             if (it.isSuccessful && it.result.data != null) {
@@ -340,7 +349,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }*/
+    }
 
     private fun openUpdDialog() {
         binding.dialog.visibility = View.VISIBLE
@@ -367,10 +376,10 @@ class MainActivity : AppCompatActivity() {
                 }
                 2 -> {
                     //Add VK
-                    binding.linkIcon.setImageResource(R.drawable.vk)
-                    binding.linkTitle.setText(R.string.add_vk)
-                    binding.editTextAddingLink.setHint(R.string.vk_example)
-                    binding.editTextAddingLink.setText(if (addedVK == "none") "" else addedVK)
+                    binding.linkIcon.setImageResource(R.drawable.youtube)
+                    binding.linkTitle.setText(R.string.add_yt)
+                    binding.editTextAddingLink.setHint(R.string.yt_example)
+                    binding.editTextAddingLink.setText(if (addedYT == "none") "" else addedYT)
                 }
                 3 -> {
                     //Add TG
@@ -418,36 +427,83 @@ class MainActivity : AppCompatActivity() {
 
     //TODO: Remove Backendless
     private fun loginInAccount(){
-        try {
-            Backendless.UserService.setCurrentUser(Backendless.UserService.login(binding.editTextTextEmailAddress.text.toString(), binding.editTextPassword.text.toString(), true))
-
-            startActivity(Intent(this, CommunityActivity::class.java))
-            finish()
-        } catch (e: BackendlessException) {
-            if (e.code == "3003") showCustomDialog(resources.getString(R.string.login_error), resources.getString(R.string.invalid_login_data))
-            else showCustomDialog(resources.getString(R.string.login_error), "ERROR CODE: ${e.code}\nHTTP STATUS CODE: ${e.httpStatusCode}\nERROR DETAILS: ${e.detail}")
+        auth.signInWithEmailAndPassword(binding.editTextTextEmailAddress.text.toString(), binding.editTextPassword.text.toString()).addOnCompleteListener {
+            if (it.isSuccessful) {
+                startActivity(Intent(this, CommunityActivity::class.java))
+                finish()
+            } else {
+                showCustomDialog(resources.getString(R.string.login_error), "An error has occurred: ${it.exception.toString().split(":")[1].trim()}")
+            }
         }
     }
 
-    //TODO: Remove Backendless 2
+    private var isBackAllowed = true
     private fun registerAnAccount(){
+        //Block everything
+        isBackAllowed = false
+        binding.apply {
+            accountCreationText.setText(R.string.creating_account)
+            accountCreationIcon.visibility = View.GONE
+            accountCreationProgressbar.visibility = View.VISIBLE
+            touchBlocker.visibility = View.VISIBLE
+        }
 
-       /* val newUser = BackendlessUser()
-        newUser.setProperty("email", editTextTextEmailAddressREG.text.toString())
-        newUser.setProperty("nickname", editTextNickname.text.toString())
-        newUser.setProperty("bio", editTextBio2.text.toString())
-        newUser.setProperty("links", "$addedDS/#@/$addedTG/#@/$addedVK")
-        newUser.password = editTextPasswordREG.text.toString()
+        lifecycleScope.launch(Dispatchers.IO) {
+            //Create an account in auth system
+            auth.createUserWithEmailAndPassword(binding.editTextTextEmailAddressREG.text.toString(), binding.editTextPasswordREG.text.toString()).addOnCompleteListener(this@MainActivity) { task ->
+                if (task.isSuccessful) {
+                    //Create user database entries
+                    val firestore = Firebase.firestore
+                    val userData = hashMapOf(
+                        "pic" to "none",
+                        "name" to binding.editTextNickname.text.toString(),
+                        "about" to binding.editTextBio2.text.toString()
+                    )
 
-        try {
-            Backendless.UserService.register(newUser)
-            Backendless.UserService.setCurrentUser(Backendless.UserService.login(editTextTextEmailAddressREG.text.toString(), editTextPasswordREG.text.toString(), true))
+                    auth = Firebase.auth
+                    firestore.collection("users").document(auth.uid!!).set(userData).addOnCompleteListener { dataCreation ->
+                        if (dataCreation.isSuccessful) {
+                            //Add links if user have added ones
+                            val userLinks = HashMap<String, Any>()
+                            if (addedDS != "") userLinks.put("ds", addedDS)
+                            if (addedTG != "") userLinks.put("tg", addedTG)
+                            if (addedYT != "") userLinks.put("yt", addedYT)
 
-            startActivity(Intent(this, CommunityActivity::class.java))
-            finish()
-        } catch (e: BackendlessException){
-            showCustomDialog(resources.getString(R.string.registration_error), "ERROR CODE: ${e.code}\nHTTP STATUS CODE: ${e.httpStatusCode}\nERROR DETAILS: ${e.detail}")
-        }*/
+                            if (userLinks.size != 0) {
+                                firestore.collection("users").document(auth.uid!!).set(hashMapOf("links" to userLinks)).addOnCompleteListener {
+                                    //Proceed to main application
+                                    startActivity(Intent(this@MainActivity, CommunityActivity::class.java))
+                                    finish()
+                                }
+                            }
+
+                            //Proceed to main application
+                            startActivity(Intent(this@MainActivity, CommunityActivity::class.java))
+                            finish()
+                        } else {
+                            //Error creating database entries
+                            showCustomDialog(resources.getString(R.string.registration_error), String.format(resources.getString(R.string.error_text), task.exception.toString().split(":")[1].trim()))
+                        }
+                    }
+                } else {
+                    //Error creating new account
+                    showCustomDialog(resources.getString(R.string.registration_error), String.format(resources.getString(R.string.error_text), task.exception.toString().split(":")[1].trim()))
+                }
+            }
+
+            withContext(Dispatchers.Main) {
+                //Unblock everything
+                isBackAllowed = true
+                binding.apply {
+                    accountCreationText.setText(R.string.create_an_account)
+                    accountCreationIcon.visibility = View.VISIBLE
+                    accountCreationProgressbar.visibility = View.GONE
+                    touchBlocker.visibility = View.GONE
+                }
+            }
+        }
+
+
     }
 
     private fun switchLoginRegister(){
@@ -457,6 +513,14 @@ class MainActivity : AppCompatActivity() {
             constraintSignIn.applyTo(binding.root)
         }
         isSignInNow = !isSignInNow
+
+        binding.apply {
+            (imageView.layoutParams as ConstraintLayout.LayoutParams).let {
+                it.matchConstraintMinWidth = bcIconSize
+                it.matchConstraintMinHeight = bcIconSize
+                imageView.layoutParams = it
+            }
+        }
     }
 
 }

@@ -353,7 +353,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:id="@+id/addVKButton"
+                            android:id="@+id/addYTButton"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginStart="7sp"
@@ -381,7 +381,7 @@
                                 android:layout_marginStart="5sp"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/googlesans_regular"
-                                android:text="@string/add_vk"
+                                android:text="@string/add_yt"
                                 android:textColor="@color/foreground_active"
                                 android:textSize="16sp" />
                         </LinearLayout>
@@ -895,7 +895,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/accountCreationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -906,7 +906,7 @@
                 android:textSize="18sp" />
 
             <ImageView
-                android:id="@+id/imageView51"
+                android:id="@+id/accountCreationIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5sp"

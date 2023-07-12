@@ -37,6 +37,7 @@
         app:cardBackgroundColor="@color/background_level_a"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -178,8 +179,10 @@
 
                 <ScrollView
                     android:id="@+id/scrollView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constrainedHeight="true"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout10"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/linearLayout9">
@@ -310,19 +313,20 @@
                     android:id="@+id/linearLayout10"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
+                    android:layout_marginBottom="10dp"
                     android:alpha="0.1"
                     android:background="@color/foreground_active"
                     android:orientation="horizontal"
+                    app:layout_constrainedHeight="false"
+                    app:layout_constraintBottom_toTopOf="@+id/cancelBttn"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/scrollView3"></LinearLayout>
+                    app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cancelBttn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
                     app:cardBackgroundColor="@color/trans"
@@ -332,11 +336,11 @@
                     app:contentPaddingLeft="10dp"
                     app:contentPaddingRight="10dp"
                     app:contentPaddingTop="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/downloadBttn"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -352,7 +356,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="10dp"
                     android:foreground="?attr/selectableItemBackgroundBorderless"
                     app:cardBackgroundColor="@color/background_level_b"
@@ -362,10 +365,10 @@
                     app:contentPaddingLeft="10dp"
                     app:contentPaddingRight="10dp"
                     app:contentPaddingTop="5dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
+                    app:layout_constraintStart_toStartOf="parent">
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 class Song {
 
     var id = ""
+    var bpm = 0f
     var charter = ""
     var title = ""
     var artist = ""
@@ -17,5 +18,6 @@ class Song {
     var isHidden = false
     var artBitmap: Bitmap? = null
     var cardYCoordinate: Int = 0
+    var isDeluxe = false
 
 }

@@ -22,3 +22,22 @@ target_link_libraries(
         decoder_texture
         rg_etc1
         ${decoder_texture})
+
+add_library(
+        ww2ogg
+        SHARED
+        ww2ogg.cpp
+        wwriff.cpp
+        codebook.cpp
+        errors.h
+        Bit_stream.h
+        crc.c)
+
+find_library(
+        log-ww2ogg
+        log)
+
+target_link_libraries(
+        ww2ogg
+        ${log-ww2ogg}
+)

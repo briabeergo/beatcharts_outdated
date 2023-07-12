@@ -8,6 +8,28 @@
     android:background="@color/background_default"
     tools:context=".CommunityActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/otherPage"
+        android:name="ru.acted.beatcharts.pages.Other"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/homePage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
     <FrameLayout
         android:id="@+id/storePage"
         android:name="ru.acted.beatcharts.pages.Store"
@@ -25,23 +47,12 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="25dp"
         android:elevation="0dp"
-        android:text="Open Encoding Test"
+        android:text="Open AUDIO Test"
         android:textColor="@color/foreground_active"
         android:textSize="14sp"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/navbar"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <FrameLayout
-        android:id="@+id/homePage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/updateNotifContainer"
@@ -388,7 +399,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="1dp"
                             android:alpha="0.4"
-                            android:src="@drawable/what"
+                            android:src="@drawable/multiply"
                             app:layout_constraintBottom_toBottomOf="@+id/textView63"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/textView63" />
@@ -572,6 +583,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/applicationPages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/notifStuff"

@@ -2,6 +2,7 @@ package ru.acted.beatcharts.dataProcessors
 
 import android.content.Context
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Handler
 import android.util.Log
@@ -52,6 +53,14 @@ class SongManager {
             song.title = jsonMap.get("title").toString()
             song.artist = jsonMap.get("artist").toString()
             song.diff = jsonMap.get("difficulty").toString()
+            song.bpm = jsonMap.get("bpm").toString().toFloat()
+            jsonMap.get("type")?.let {
+                try {
+                    song.isDeluxe = (it as String) == "Promode"
+                } catch (_: Exception) {
+
+                }
+            }
 
             if (song.artist.contains("//@")){
                 val workers = song.artist.split("//@")
@@ -70,7 +79,7 @@ class SongManager {
             song.artworkPath = "${song.directoryPath}/artwork.bundle"
 
             try {
-                song.artBitmap = DeEncodingManager().getArtworkBitmap(File(song.artworkPath).readBytes())
+                song.artBitmap = Bitmap.createScaledBitmap(DeEncodingManager().getArtworkBitmap(File(song.artworkPath).readBytes()), 150, 150, false)
                 song.baseColor = Palette.from(song.artBitmap!!).generate().getDominantColor(reso.getColor(
                     R.color.background_level_a
                 )).toString()

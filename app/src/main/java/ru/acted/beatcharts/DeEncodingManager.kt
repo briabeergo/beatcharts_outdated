@@ -52,7 +52,7 @@ class DeEncodingManager {
         while (i < bytes.size) {
             //Interact with activity
             if (i % 300 == 0) withContext(Dispatchers.Main) {
-                viewModel?.pubProgressInteraction!!.value = i
+                viewModel?.let { it.pubProgressInteraction!!.value = i }
             }
 
             //Read current byte as string
@@ -1208,7 +1208,7 @@ class DeEncodingManager {
     }
     //Convert mp3 to Wav
     fun convertMp3ToWav(fileInput: File, fileOutput: File): Boolean {
-        FFmpeg.execute("-i ${fileInput.absolutePath} -acodec pcm_s16le -ar 44100 ${fileOutput.absolutePath}").let { //TODO добавить настройку 3000
+        FFmpeg.execute("-i ${fileInput.absolutePath} -acodec pcm_s16le -ar 44100 ${fileOutput.absolutePath}").let {
             when (it) {
                 RETURN_CODE_SUCCESS -> {
                     Log.i(Config.TAG, "Command execution completed successfully.")

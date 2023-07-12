@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/userPageRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_default"
+    tools:context=".pages.UserProfile">
+
+    <LinearLayout
+        android:id="@+id/userHeaderDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.1"
+        android:background="@color/foreground_active"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/userContentScrollView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+
+    <ScrollView
+        android:id="@+id/userContentScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/header">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/infoBlock"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/textView6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:fontFamily="@font/googlesans_medium"
+                    android:singleLine="true"
+                    android:text="@string/user_info"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/userBio"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:alpha="0.7"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:text="@string/loading"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView6"
+                    app:layout_constraintStart_toStartOf="@+id/textView6"
+                    app:layout_constraintTop_toBottomOf="@+id/textView6" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_conversion_absoluteHeight="731dp"
+        tools:layout_conversion_absoluteWidth="411dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/badgesList"
+            android:layout_width="0dp"
+            android:layout_height="22dp"
+            android:layout_marginTop="3dp"
+            android:clipChildren="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/avatarCenter"
+            app:layout_constraintTop_toBottomOf="@+id/username"
+            tools:itemCount="1"
+            tools:listitem="@layout/recyclerview_badge_item" />
+
+        <Space
+            android:id="@+id/avatarSpace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/username"
+            app:layout_constraintEnd_toStartOf="@+id/username"
+            app:layout_constraintStart_toEndOf="@+id/avatarCenter"
+            app:layout_constraintTop_toTopOf="@+id/username" />
+
+        <LinearLayout
+            android:id="@+id/avatarCenter"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/cardView6"
+            app:layout_constraintStart_toStartOf="@+id/cardView6"
+            app:layout_constraintTop_toTopOf="@+id/cardView6"></LinearLayout>
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView6" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/badgesContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cardView6"
+            app:layout_constraintTop_toBottomOf="@+id/username">
+
+            <TextView
+                android:id="@+id/noBadgesText"
+                android:layout_width="wrap_content"
+                android:layout_height="22dp"
+                android:alpha="0.5"
+                android:fontFamily="@font/googlesans_regular"
+                android:text="@string/no_badges"
+                android:textColor="@color/foreground_active"
+                android:textSize="14sp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/loadingBadges"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/userBg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="-40dp"
+            android:layout_marginTop="-40dp"
+            android:layout_marginEnd="-40dp"
+            android:layout_marginBottom="-3dp"
+            android:background="@color/background_level_a"
+            android:orientation="vertical"
+            android:rotation="-0.2"
+            app:layout_constraintBottom_toBottomOf="@+id/username"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/profileTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_conversion_absoluteHeight="731dp"
+            tools:layout_conversion_absoluteWidth="411dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:alpha="0.1"
+                android:background="@color/foreground_active"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profileBackButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="-30dp"
+                android:layout_marginTop="-30dp"
+                android:layout_marginEnd="-20dp"
+                android:layout_marginBottom="-30dp"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:orientation="horizontal"
+                android:rotation="10"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/userPageBackButtonText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+            <ImageView
+                android:id="@+id/userPageBackButtonIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:rotation="180"
+                android:src="@drawable/arrow_circle_right"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/foreground_active" />
+
+            <TextView
+                android:id="@+id/userPageBackButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/googlesans_regular"
+                android:text="@string/user"
+                android:textColor="@color/foreground_active"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toBottomOf="@+id/userPageBackButtonIcon"
+                app:layout_constraintStart_toEndOf="@+id/userPageBackButtonIcon"
+                app:layout_constraintTop_toTopOf="@+id/userPageBackButtonIcon" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView6"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="-5dp"
+            android:layout_marginBottom="-5dp"
+            app:cardBackgroundColor="@color/background_default"
+            app:cardCornerRadius="100dp"
+            app:cardElevation="0dp"
+            app:contentPadding="5dp"
+            app:layout_constraintBottom_toBottomOf="@+id/badgesContainer"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/username">
+
+            <ru.acted.beatcharts.views.AvatarView
+                android:id="@+id/userAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.cardview.widget.CardView>
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="28dp"
+            android:background="#00FFFFFF"
+            android:enabled="false"
+            android:fontFamily="@font/googlesans_medium"
+            android:inputType="text"
+            android:singleLine="true"
+            android:text="@string/loading"
+            android:textColor="@color/foreground_active"
+            android:textSize="24sp"
+            app:layout_constraintStart_toEndOf="@+id/cardView6"
+            app:layout_constraintTop_toBottomOf="@+id/profileTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/errorMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_default"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/userErrorText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
+            android:fontFamily="@font/googlesans_regular"
+            android:text="This is an error message"
+            android:textAlignment="center"
+            android:textColor="@color/foreground_active"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/closeErrorButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            app:cardBackgroundColor="@color/background_level_a"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="1dp"
+            app:contentPaddingBottom="3dp"
+            app:contentPaddingLeft="8dp"
+            app:contentPaddingRight="8dp"
+            app:contentPaddingTop="3dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/userErrorText">
+
+            <TextView
+                android:id="@+id/textView68"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/googlesans_regular"
+                android:text="@string/okay"
+                android:textColor="@color/foreground_active"
+                android:textSize="16sp" />
+        </androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

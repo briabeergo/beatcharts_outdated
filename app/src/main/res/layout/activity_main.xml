@@ -11,6 +11,37 @@
     tools:context=".MainActivity">
 
     <LinearLayout
+        android:id="@+id/backgroundA1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="-50dp"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="-50dp"
+        android:layout_marginBottom="20dp"
+        android:background="@color/background_level_a"
+        android:orientation="vertical"
+        android:rotation="-2"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/backgroundB1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="-50dp"
+        android:layout_marginTop="-20dp"
+        android:layout_marginEnd="-50dp"
+        android:background="@color/background_level_b"
+        android:orientation="vertical"
+        android:rotation="-5"
+        app:layout_constraintBottom_toTopOf="@+id/helper1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -220,6 +251,21 @@
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="-30dp"
+        android:layout_marginBottom="-20dp"
+        android:rotation="6"
+        android:scaleType="fitCenter"
+        android:src="@drawable/beatstarsvg"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundA1"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/helper1"
+        app:tint="@color/background_default" />
+
     <ScrollView
         android:id="@+id/register_content"
         android:layout_width="0dp"
@@ -230,7 +276,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/backgroundA1"
-        tools:visibility="gone">
+        tools:visibility="visible">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -241,7 +287,8 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:paddingBottom="12dp">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
@@ -270,19 +317,10 @@
                         android:paddingRight="10sp"
                         android:paddingBottom="4sp">
 
-                        <ImageView
-                            android:id="@+id/toficon"
-                            android:layout_width="18sp"
-                            android:layout_height="18sp"
-                            android:layout_weight="1"
-                            app:srcCompat="@drawable/external_link_alt"
-                            app:tint="@color/foreground_active" />
-
                         <TextView
                             android:id="@+id/tofopentext"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="5sp"
                             android:layout_weight="1"
                             android:fontFamily="@font/googlesans_regular"
                             android:text="@string/openTOF"
@@ -300,6 +338,9 @@
                     android:layout_marginTop="10dp"
                     android:layout_marginEnd="25dp"
                     android:gravity="top"
+                    android:minHeight="0dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:text="@string/terms_text"
                     android:textColor="@color/foreground_active"
                     android:textSize="17sp"
@@ -324,6 +365,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="10dp"
+                    android:scrollbars="none"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
@@ -430,7 +472,7 @@
                             app:cardMaxElevation="0sp">
 
                             <LinearLayout
-                                android:id="@+id/addVKButton"
+                                android:id="@+id/addYTButton"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:background="@drawable/card_colored_a"
@@ -447,7 +489,7 @@
                                     android:layout_width="18sp"
                                     android:layout_height="18sp"
                                     android:layout_weight="1"
-                                    app:srcCompat="@drawable/vk"
+                                    app:srcCompat="@drawable/youtube"
                                     app:tint="@color/foreground_active" />
 
                                 <TextView
@@ -457,7 +499,7 @@
                                     android:layout_marginStart="5sp"
                                     android:layout_weight="1"
                                     android:fontFamily="@font/googlesans_regular"
-                                    android:text="@string/add_vk"
+                                    android:text="@string/add_yt"
                                     android:textColor="@color/foreground_active"
                                     android:textSize="16sp" />
                             </LinearLayout>
@@ -526,7 +568,7 @@
                     android:alpha="0.5"
                     android:fontFamily="@font/googlesans_regular"
                     android:singleLine="true"
-                    android:text="@string/nickname_id_hint"
+                    android:text="@string/can_be_changed_later"
                     android:textColor="@color/foreground_active"
                     android:textSize="14sp"
                     app:layout_constraintBottom_toBottomOf="@+id/cardView"
@@ -587,7 +629,7 @@
                         android:layout_width="50sp"
                         android:layout_height="50sp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="8sp"
+                        android:layout_marginTop="8dp"
                         android:alpha="0.4"
                         app:srcCompat="@drawable/user"
                         app:tint="@color/foreground_active" />
@@ -746,52 +788,6 @@
         app:layout_constraintTop_toTopOf="@+id/helper2"></LinearLayout>
 
     <LinearLayout
-        android:id="@+id/backgroundA1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-20dp"
-        android:layout_marginEnd="-50dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/background_level_a"
-        android:orientation="vertical"
-        android:rotation="-2"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/backgroundB1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="-50dp"
-        android:layout_marginTop="-20dp"
-        android:layout_marginEnd="-50dp"
-        android:background="@color/background_level_b"
-        android:orientation="vertical"
-        android:rotation="-5"
-        app:layout_constraintBottom_toTopOf="@+id/helper1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></LinearLayout>
-
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="-30dp"
-        android:layout_marginBottom="-20dp"
-        android:rotation="6"
-        android:scaleType="fitCenter"
-        android:src="@drawable/beatstarsvg"
-        app:layout_constraintBottom_toBottomOf="@+id/backgroundA1"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/helper1"
-        app:tint="@color/background_default" />
-
-    <LinearLayout
         android:id="@+id/linearLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -946,7 +942,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/accountCreationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -957,12 +953,21 @@
                 android:textSize="18sp" />
 
             <ImageView
-                android:id="@+id/imageView51"
+                android:id="@+id/accountCreationIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5sp"
+                android:layout_marginLeft="5dp"
                 app:srcCompat="@drawable/angle_right"
                 app:tint="@color/foreground_active" />
+
+            <ProgressBar
+                android:id="@+id/accountCreationProgressbar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="0"
+                android:visibility="gone" />
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
@@ -1010,6 +1015,202 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/customDialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25sp"
+                android:layout_marginTop="25sp"
+                android:layout_marginEnd="25sp"
+                android:layout_marginBottom="25sp"
+                android:background="@drawable/card_colored_a"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/customCloseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/card_colored_b"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10sp"
+                    android:paddingTop="4sp"
+                    android:paddingRight="10sp"
+                    android:paddingBottom="4sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <TextView
+                        android:id="@+id/textView1355"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:text="@string/okay"
+                        android:textAlignment="center"
+                        android:textColor="@color/foreground_active"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearLayout4"
+                    android:layout_width="0dp"
+                    android:layout_height="1sp"
+                    android:layout_marginTop="10dp"
+                    android:alpha="0.1"
+                    android:background="@color/foreground_active"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/customTitle"></LinearLayout>
+
+                <ScrollView
+                    android:id="@+id/scrollView2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constrainedHeight="true"
+                    app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
+                    app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
+                    app:layout_constraintVertical_bias="0.0">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/customData"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="25sp"
+                            android:layout_marginTop="10sp"
+                            android:layout_marginRight="25sp"
+                            android:layout_marginBottom="10sp"
+                            android:alpha="0.7"
+                            android:fontFamily="@font/googlesans_regular"
+                            android:text="CustomData"
+                            android:textColor="@color/foreground_active"
+                            android:textSize="18sp" />
+                    </LinearLayout>
+                </ScrollView>
+
+                <TextView
+                    android:id="@+id/customTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="25dp"
+                    android:fontFamily="@font/googlesans_medium"
+                    android:text="DialogTitle"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <LinearLayout
+                    android:id="@+id/linearLayout5"
+                    android:layout_width="0dp"
+                    android:layout_height="1sp"
+                    android:layout_marginBottom="10dp"
+                    android:alpha="0.1"
+                    android:background="@color/foreground_active"
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toTopOf="@+id/customCloseButton"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/disclaimerPopUp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25sp"
+                android:layout_marginRight="25sp"
+                android:background="@drawable/card_colored_a"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView2"
+                    app:srcCompat="@drawable/info_circle"
+                    app:tint="@color/foreground_active" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:text="@string/disclaimer"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="21sp"
+                    app:layout_constraintStart_toEndOf="@+id/imageView5"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="20dp"
+                    android:fontFamily="@font/googlesans_regular"
+                    android:text="@string/disclaimer_text"
+                    android:textColor="@color/foreground_active"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/imageView5"
+                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+                <LinearLayout
+                    android:id="@+id/disclaimerCloseButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/card_colored_b"
+                    android:foreground="?attr/selectableItemBackgroundBorderless"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10sp"
+                    android:paddingTop="4sp"
+                    android:paddingRight="10sp"
+                    android:paddingBottom="4sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3">
+
+                    <TextView
+                        android:id="@+id/textView135"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/googlesans_regular"
+                        android:text="@string/okay"
+                        android:textAlignment="center"
+                        android:textColor="@color/foreground_active"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/addLinkDialog"
@@ -1177,120 +1378,6 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView21"></LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/customDialog"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25sp"
-                android:layout_marginTop="25sp"
-                android:layout_marginEnd="25sp"
-                android:layout_marginBottom="25sp"
-                android:background="@drawable/card_colored_a"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:id="@+id/customCloseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/card_colored_b"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10sp"
-                    android:paddingTop="4sp"
-                    android:paddingRight="10sp"
-                    android:paddingBottom="4sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
-
-                    <TextView
-                        android:id="@+id/textView1355"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/googlesans_regular"
-                        android:text="@string/okay"
-                        android:textAlignment="center"
-                        android:textColor="@color/foreground_active"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearLayout4"
-                    android:layout_width="0dp"
-                    android:layout_height="1sp"
-                    android:layout_marginTop="10dp"
-                    android:alpha="0.1"
-                    android:background="@color/foreground_active"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/customTitle"></LinearLayout>
-
-                <ScrollView
-                    android:id="@+id/scrollView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constrainedHeight="true"
-                    app:layout_constraintBottom_toTopOf="@+id/linearLayout5"
-                    app:layout_constraintEnd_toStartOf="@+id/linearLayout5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4"
-                    app:layout_constraintVertical_bias="0.0">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/customData"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="25sp"
-                            android:layout_marginTop="10sp"
-                            android:layout_marginRight="25sp"
-                            android:layout_marginBottom="10sp"
-                            android:alpha="0.7"
-                            android:fontFamily="@font/googlesans_regular"
-                            android:text="CustomData"
-                            android:textColor="@color/foreground_active"
-                            android:textSize="18sp" />
-                    </LinearLayout>
-                </ScrollView>
-
-                <TextView
-                    android:id="@+id/customTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="25dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="25dp"
-                    android:fontFamily="@font/googlesans_medium"
-                    android:text="DialogTitle"
-                    android:textColor="@color/foreground_active"
-                    android:textSize="24sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <LinearLayout
-                    android:id="@+id/linearLayout5"
-                    android:layout_width="0dp"
-                    android:layout_height="1sp"
-                    android:layout_marginBottom="10dp"
-                    android:alpha="0.1"
-                    android:background="@color/foreground_active"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toTopOf="@+id/customCloseButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"></LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/chartEditorPopUp"
                 android:layout_width="match_parent"
@@ -1445,88 +1532,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/disclaimerPopUp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="25sp"
-                android:layout_marginRight="25sp"
-                android:background="@drawable/card_colored_a"
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/imageView5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/textView2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/textView2"
-                    app:srcCompat="@drawable/info_circle"
-                    app:tint="@color/foreground_active" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
-                    android:fontFamily="@font/googlesans_regular"
-                    android:text="@string/disclaimer"
-                    android:textColor="@color/foreground_active"
-                    android:textSize="21sp"
-                    app:layout_constraintStart_toEndOf="@+id/imageView5"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="20dp"
-                    android:fontFamily="@font/googlesans_regular"
-                    android:text="@string/disclaimer_text"
-                    android:textColor="@color/foreground_active"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/imageView5"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-                <LinearLayout
-                    android:id="@+id/disclaimerCloseButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@drawable/card_colored_b"
-                    android:foreground="?attr/selectableItemBackgroundBorderless"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:paddingLeft="10sp"
-                    android:paddingTop="4sp"
-                    android:paddingRight="10sp"
-                    android:paddingBottom="4sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView3">
-
-                    <TextView
-                        android:id="@+id/textView135"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/googlesans_regular"
-                        android:text="@string/okay"
-                        android:textAlignment="center"
-                        android:textColor="@color/foreground_active"
-                        android:textSize="18sp" />
-                </LinearLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </LinearLayout>
 
@@ -1699,5 +1704,16 @@
         app:layout_constraintTop_toTopOf="parent">
 
     </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/touchBlocker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

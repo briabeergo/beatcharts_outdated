@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.*
-import android.transition.AutoTransition
 import androidx.appcompat.app.AppCompatActivity
 import android.transition.ChangeBounds
 import android.transition.TransitionManager
@@ -13,15 +12,14 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.lifecycle.ViewModelProvider
-import com.backendless.Backendless
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import ru.acted.beatcharts.dataProcessors.SongManager
 import ru.acted.beatcharts.databinding.ActivityCommunityBinding
 import ru.acted.beatcharts.dialogs.ActionNotify
+import ru.acted.beatcharts.dialogs.ChartPreview
 import ru.acted.beatcharts.dialogs.DeleteDialog
 import ru.acted.beatcharts.dialogs.FilesDialog
 import ru.acted.beatcharts.dialogs.UpdateDialog
@@ -31,7 +29,6 @@ import ru.acted.beatcharts.pages.UploadPage
 import ru.acted.beatcharts.types.Song
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.animateDisable
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.animateEnable
-import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.closeToLeft
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.closeToRight
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.openFromCenter
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.openFromRightScreenSide
@@ -62,10 +59,6 @@ class CommunityActivity : AppCompatActivity(){
         if (getSharedPreferences("app", Context.MODE_PRIVATE)?.getBoolean("isOffline", false) == true) {
             viewModel.offlineMode.value = true
         }
-
-        //TODO Remove backendless
-        Backendless.setUrl(BackendlessDef.SERVER_URL)
-        Backendless.initApp(applicationContext, BackendlessDef.APPLICATION_ID, BackendlessDef.API_KEY)
 
         val windowBackground = window.decorView.background
         val decorView = window.decorView
@@ -111,6 +104,19 @@ class CommunityActivity : AppCompatActivity(){
                                 binding.blurBackgroundHome.setBlurEnabled(false)
                                 binding.blurBackgroundHome.visibility = View.GONE
                                 binding.tapMuter.visibility = View.GONE
+                            }
+                        }
+                        7 -> {
+                            binding.blurBackgroundHome.setBlurAutoUpdate(true)
+                            binding.blurBackgroundHome.animateDisable {
+                                binding.blurBackgroundHome.setBlurEnabled(false)
+                                binding.blurBackgroundHome.visibility = View.GONE
+                                binding.dialogOverlay.visibility = View.GONE
+                                supportFragmentManager.findFragmentByTag("dialog")?.let {
+                                    supportFragmentManager.beginTransaction().remove(it).commitNow()
+                                }
+                                binding.mainLoadingIndicator.visibility = View.GONE
+                                binding.navblur.setBlurEnabled(true)
                             }
                         }
                         else -> { //Close everything else
@@ -231,14 +237,15 @@ class CommunityActivity : AppCompatActivity(){
                     prevDialog = 6
                 }
                 7 -> {
-                    //My message
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.dialogOverlay, ChartPreview.newInstance(viewModel.songIdForPreview.value!!), "dialog").commitNow()
                     binding.dialogOverlay.visibility = View.VISIBLE
-                    binding.myMessage.scaleAppear()
 
                     binding.blurBackgroundHome.visibility = View.VISIBLE
-                    binding.blurBackgroundHome.setBlurEnabled(true)
-                    binding.blurBackgroundHome.animateEnable()
                     binding.navblur.setBlurEnabled(false)
+                    binding.blurBackgroundHome.setBlurEnabled(true)
+                    binding.blurBackgroundHome.setBlurAutoUpdate(false)
+                    binding.blurBackgroundHome.animateEnable()
                     prevDialog = 7
                 }
             }
@@ -253,16 +260,7 @@ class CommunityActivity : AppCompatActivity(){
 
             //TODO remove it
             openEncodingActivity.setOnClickListener {
-                viewModel.showNotif("Something was successful!!")
-            }
-
-            //TODO remove this too :)
-            myMessageCloseButton.setOnClickListener {
-                binding.myMessage.visibility = View.GONE
-
-                getSharedPreferences("app", Context.MODE_PRIVATE).edit().putBoolean("myMessage", true).apply()
-                viewModel.changeDialogTo(0)
-                showPopUps()
+                startActivity(Intent(this@CommunityActivity, TestAudioActivity::class.java))
             }
 
             closeSyncPromo.setOnClickListener {
@@ -285,18 +283,13 @@ class CommunityActivity : AppCompatActivity(){
                     showPopUps()
                 }
 
-                //checkForUpdates() TODO implement update check here
+                checkForUpdates()
             }
         }
     }
 
     private fun showPopUps() {
         Handler().postDelayed({
-            //Show my message if user not seen it //TODO remove it if you want
-            if (getSharedPreferences("app", Context.MODE_PRIVATE)?.getBoolean("myMessage", false) == false) {
-                viewModel.changeDialogTo(7)
-            } else
-
             //Show promo if user not seen it
             if (getSharedPreferences("app", Context.MODE_PRIVATE)?.getBoolean("promoScore", false) == false) {
                 viewModel.changeDialogTo(6)
@@ -309,10 +302,11 @@ class CommunityActivity : AppCompatActivity(){
         if (prevDialog == 4) viewModel.changeDialogTo(0)
     }
 
+
     private var tags: Map<String, Map<String, *>>? = null
     private var changelogs: Map<String, String>? = null
     private var ver = ""
-    /*private fun checkForUpdates() {
+    private fun checkForUpdates() {
         val db = Firebase.firestore
         db.collection("status").document("app").get().addOnCompleteListener {
             if (it.isSuccessful && it.result.data != null) {
@@ -332,7 +326,7 @@ class CommunityActivity : AppCompatActivity(){
                 }
             }
         }
-    }*/
+    }
 
     private fun initNavigation(){
         //MakeBlurs
@@ -391,6 +385,8 @@ class CommunityActivity : AppCompatActivity(){
                 //TransitionManager.beginDelayedTransition(other_button, params)
                 otherClose.applyTo(binding.otherButton)
                 binding.otherIcon.alpha = 0.4.toFloat()
+
+                binding.otherPage.visibility = View.GONE
             }
         }
         //Open animation and display page
@@ -425,7 +421,8 @@ class CommunityActivity : AppCompatActivity(){
                 otherOpen.applyTo(binding.otherButton)
                 binding.otherIcon.alpha = 1.toFloat()
                 //Open
-                //TODO: Make open other here
+                binding.otherPage.visibility = View.VISIBLE
+                binding.otherPage.openFromCenter()
             }
         }
     }

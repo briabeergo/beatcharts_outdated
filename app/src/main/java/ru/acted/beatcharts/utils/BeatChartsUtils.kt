@@ -140,6 +140,11 @@ class BeatChartsUtils {
         companion object {
             fun Int.px(): Int = (this * Resources.getSystem().displayMetrics.density).toInt()
             fun Int.dp(): Int = (this / Resources.getSystem().displayMetrics.density).toInt()
+            fun String.asHex(): ByteArray {
+                return chunked(2).map {
+                    it.toInt(16).toByte()
+                }.toByteArray()
+            }
         }
     }
     class Animations {

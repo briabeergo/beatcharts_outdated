@@ -31,7 +31,9 @@ class ScoreHandler : Activity() {
         binding = ActivityScoreHandlerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        finishAndRemoveTask() //TODO remove it later
+        Toast.makeText(this, "STARTED", Toast.LENGTH_LONG).show()
+
+        //finishAndRemoveTask() //TODO remove it later
 
         binding.feedbackTextview.text =
             "ID: ${intent.getStringExtra("id")}\n" +
@@ -43,13 +45,10 @@ class ScoreHandler : Activity() {
         recievedArtist.text = "Artist: ${intent.getStringExtra("artist")}"
         recievedScore.text = "Score: ${intent.getStringExtra("score")}"*/
 
-        /*if (intent.getStringExtra("handshake") == "ASK EXTERNAL :)") { //<--- This is a secret handshake code to make reverse engineering a bit harder. Ask External if you have reached an online services implementation point
+        /*if (intent.getStringExtra("handshake") == "cake01") {
             isOpenTrusted.text = "Open trusted :)"
             isOpenTrusted.setTextColor(Color.parseColor("#FF00B509"))
         }*/
-        binding.button.setOnClickListener {
-            closeThisWindow()
-        }
 
         //Open a message with animation
         openedLayout.clone(this, R.layout.layout_overlay_opened)

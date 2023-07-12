@@ -93,9 +93,10 @@ class DeleteDialog : Fragment() {
                             songArtist.setTextColor(resources.getColor(R.color.black))
                         }
 
-
                         songArtwork.setImageBitmap(songSelected.artBitmap)
 
+                        //Bind deluxe mark
+                        deluxeMark.visibility = if (songSelected.isDeluxe) View.VISIBLE else View.GONE
 
                         //Bind gradient
                         val gradientDrawable = GradientDrawable().apply {
