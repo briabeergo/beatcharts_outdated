@@ -244,7 +244,7 @@
     <string name="cant_load_badges">Не удаётся загрузить значки...</string>
     <string name="user_info">Информация</string>
     <string name="user_empty_bio">%1$s довольно молчалив(а)</string>
-    <string name="chart_preview_loading">Досканально изучаем чарт...</string>
+    <string name="chart_preview_loading">Пожалуйста, подождите. Сейчас происходят очень сложные процессы чтобы вы могли увидеть песенку</string>
     <string name="charters_preview">Предпросмотр чарта от %1$s</string>
     <string name="tap_anywhere_to_close">Нажмите, чтобы закрыть</string>
     <string name="preview_running">"предпросмотр  "</string>
@@ -256,4 +256,5 @@
     <string name="medal_gold">Золото</string>
     <string name="medal_none">Нет медали</string>
     <string name="medal_diamond_perfect">Идеально</string>
+    <string name="notes_left">нот осталось</string>
 </resources>

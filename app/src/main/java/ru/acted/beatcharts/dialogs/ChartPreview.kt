@@ -242,6 +242,9 @@ class ChartPreview : Fragment() {
                 timers.add(it)
             }
 
+            //Bind visual notes remaining indicator
+            chart?.let { binding.remainigNotesCount.text = it.notes.size.toString() }
+
             //Preview timer
             data class RailHold (
                 var offsets: MutableList<NoteOffset> = mutableListOf(),
@@ -340,6 +343,9 @@ class ChartPreview : Fragment() {
                             //Check if this is rail holds keks
                             if (note.type == 5) railHolds.add(RailHold(note.offsets, note.lane))
 
+                            //Now decrease notes counter
+                            binding.remainigNotesCount.text = (binding.remainigNotesCount.text.toString().toInt() - 1).toString()
+                            animateNotesCountChanged()
                         } else break
                     }
 
@@ -359,9 +365,48 @@ class ChartPreview : Fragment() {
         }
     }
 
+    private fun animateNotesCountChanged() {
+        val localDecelerate = DecelerateInterpolator(2f)
+
+        binding.apply {
+            notesRemainingContainer.scaleX = 1.3f
+            notesRemainingContainer.scaleY = 1.3f
+            notesRemainingContainer.animate().apply {
+                interpolator = localDecelerate
+                scaleX(1f)
+                scaleY(1f)
+                duration = 300
+                start()
+            }
+
+            notesRemainingHighlight.alpha = 0.3f
+            notesRemainingHighlight.animate().apply {
+                interpolator = localDecelerate
+                alpha(0.05f)
+                duration = 300
+                start()
+            }
+
+            remainigNotesCount.alpha = 1f
+            remainigNotesCount.animate().apply {
+                interpolator = localDecelerate
+                alpha(0.7f)
+                duration = 300
+                start()
+            }
+
+            notesRemainingText.alpha = 0.7f
+            notesRemainingText.animate().apply {
+                interpolator = localDecelerate
+                alpha(0f)
+                duration = 300
+                start()
+            }
+        }
+    }
+
     private fun animateStart() {
         val decelerateInterpolator = DecelerateInterpolator(1.0f)
-
         binding.apply {
 
             playboard.scaleX = 1.3f
