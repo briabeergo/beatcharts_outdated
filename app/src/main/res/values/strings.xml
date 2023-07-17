@@ -250,7 +250,7 @@
     <string name="user_info">Info</string>
     <string name="user_empty_bio">%1$s doesn\'t have much to say</string>
     <string name="title_activity_test_audio">TestAudioActivity</string>
-    <string name="chart_preview_loading">We take a thorough look at the chart...</string>
+    <string name="chart_preview_loading">Please wait. Now complex systems are working to let you see your music</string>
     <string name="charters_preview">%1$s\'s chart preview</string>
     <string name="tap_anywhere_to_close">Tap anywhere to close</string>
     <string name="preview_running">"preview  "</string>
@@ -262,6 +262,8 @@
     <string name="medal_gold">Gold</string>
     <string name="medal_none">No medal</string>
     <string name="medal_diamond_perfect">Diamond Perfect</string>
+    <string name="notes_left">notes remaining</string>
+    <string name="no_sections_hint">There is no sections in the chart :(. But BeatCharts will add one in the end of the song for you! :)</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

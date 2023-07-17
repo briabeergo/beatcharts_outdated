@@ -105,7 +105,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView">
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+                tools:visibility="gone">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/constraintLayout12"
@@ -666,7 +667,8 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView">
+                app:layout_constraintTop_toBottomOf="@+id/horizontalScrollView"
+                tools:visibility="visible">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/stagesSection"
@@ -676,44 +678,103 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:id="@+id/textView49"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:alpha="0.5"
-                        android:fontFamily="@font/googlesans_regular"
-                        android:text="@string/remove_stage_hint"
-                        android:textColor="@color/foreground_active"
-                        android:textSize="14sp"
-                        app:layout_constraintStart_toStartOf="@+id/textView48"
-                        app:layout_constraintTop_toTopOf="@+id/textView48" />
-
-                    <TextView
-                        android:id="@+id/textView48"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:layout_marginBottom="1dp"
-                        android:fontFamily="@font/googlesans_regular"
-                        android:text="a"
-                        android:textColor="@color/foreground_active"
-                        android:textSize="14sp"
-                        android:visibility="invisible"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageView14"
-                        app:layout_constraintStart_toEndOf="@+id/imageView14"
-                        app:layout_constraintTop_toTopOf="@+id/imageView14" />
-
-                    <ImageView
-                        android:id="@+id/imageView14"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="25dp"
                         android:layout_marginTop="8dp"
-                        android:alpha="0.5"
-                        android:src="@drawable/info_circle"
+                        android:layout_marginEnd="25dp"
+                        android:background="@drawable/card_colored_a"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/stagesListView"
-                        app:tint="@color/foreground_active" />
+                        app:layout_constraintTop_toBottomOf="@+id/noSectionsHint">
+
+                        <TextView
+                            android:id="@+id/textView49"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:alpha="0.8"
+                            android:fontFamily="@font/googlesans_regular"
+                            android:text="@string/remove_stage_hint"
+                            android:textColor="@color/foreground_active"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="@+id/textView48"
+                            app:layout_constraintTop_toTopOf="@+id/textView48"
+                            app:layout_constraintVertical_bias="0.0" />
+
+                        <TextView
+                            android:id="@+id/textView48"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="@font/googlesans_regular"
+                            android:text="a"
+                            android:textColor="@color/foreground_active"
+                            android:textSize="14sp"
+                            android:visibility="invisible"
+                            app:layout_constraintStart_toEndOf="@+id/imageView14"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/imageView14"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="12dp"
+                            android:alpha="0.8"
+                            android:src="@drawable/info_circle"
+                            app:layout_constraintBottom_toBottomOf="@+id/textView48"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/textView48"
+                            app:tint="@color/foreground_active" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/noSectionsHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="25dp"
+                        android:background="@drawable/card_colored_a"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/stagesListView">
+
+                        <ImageView
+                            android:id="@+id/imageView37"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:src="@drawable/info_circle"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_bias="0.0"
+                            app:tint="@color/foreground_active" />
+
+                        <TextView
+                            android:id="@+id/textView72"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginEnd="12dp"
+                            android:layout_marginBottom="8dp"
+                            android:fontFamily="@font/googlesans_regular"
+                            android:text="@string/no_sections_hint"
+                            android:textColor="@color/foreground_active"
+                            android:textSize="14sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/imageView37"
+                            app:layout_constraintTop_toTopOf="@+id/imageView37"
+                            app:layout_constraintVertical_bias="0.0" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
                         android:id="@+id/linearLayout21"

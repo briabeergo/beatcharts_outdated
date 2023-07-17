@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "848704988781",
+    "project_id": "fr4pp-819a8",
+    "storage_bucket": "fr4pp-819a8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848704988781:android:2772515653a0425ba14164",
+        "android_client_info": {
+          "package_name": "ru.acted.beatcharts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "848704988781-c8qpkg4bo55i287nvb11vtl451s9tcsp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcZdsgCPsV-7xy5ioxvmsCE_e5RGOxCzU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "848704988781-c8qpkg4bo55i287nvb11vtl451s9tcsp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
