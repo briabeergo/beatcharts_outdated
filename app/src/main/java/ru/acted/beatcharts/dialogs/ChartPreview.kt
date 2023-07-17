@@ -375,7 +375,7 @@ class ChartPreview : Fragment() {
                 interpolator = localDecelerate
                 scaleX(1f)
                 scaleY(1f)
-                duration = 300
+                duration = 450
                 start()
             }
 
@@ -383,7 +383,7 @@ class ChartPreview : Fragment() {
             notesRemainingHighlight.animate().apply {
                 interpolator = localDecelerate
                 alpha(0.05f)
-                duration = 300
+                duration = 450
                 start()
             }
 
@@ -391,7 +391,7 @@ class ChartPreview : Fragment() {
             remainigNotesCount.animate().apply {
                 interpolator = localDecelerate
                 alpha(0.7f)
-                duration = 300
+                duration = 450
                 start()
             }
 
@@ -399,7 +399,7 @@ class ChartPreview : Fragment() {
             notesRemainingText.animate().apply {
                 interpolator = localDecelerate
                 alpha(0f)
-                duration = 300
+                duration = 450
                 start()
             }
         }
