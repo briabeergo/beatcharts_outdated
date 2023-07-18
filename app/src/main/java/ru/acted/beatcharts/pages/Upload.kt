@@ -1053,18 +1053,28 @@ class UploadPage : Fragment() {
             (binding.stagesListView.adapter as SimpleCardRecyclerViewAdapter).notifyDataSetChanged()
 
             //Feedback stages and needed action
-            if (stagesList.size < 5) {
+            /*if (stagesList.size < 5) { 5 STAGES IS NOT REQUIRED
                 binding.stagesRedDot.visibility = View.VISIBLE
                 binding.stagesState.text = resources.getString(R.string.not_enough_sections) + " (${stagesList.size}/5)"
                 isEverythingOk = false
-            } else if (stagesList.size > 5) {
-                binding.stagesRedDot.visibility = View.VISIBLE
-                binding.stagesState.text = resources.getString(R.string.too_much_sections) + " (${stagesList.size}/5)"
-                isEverythingOk = false
-            } else {
-                binding.stagesRedDot.visibility = View.GONE
-                binding.stagesState.text = resources.getString(R.string.everything_ok) + " (5/5) :)"
+            } else*/
+            binding.apply {
+                noSectionsHint.visibility = View.GONE
+                sectionDeleteHint.visibility = View.VISIBLE
+
+                if (stagesList.size == 0) {
+                    noSectionsHint.visibility = View.VISIBLE
+                    sectionDeleteHint.visibility = View.GONE
+                } else if (stagesList.size > 5) {
+                    stagesRedDot.visibility = View.VISIBLE
+                    stagesState.text = resources.getString(R.string.too_much_sections) + " (${stagesList.size}/5)"
+                    isEverythingOk = false
+                } else {
+                    stagesRedDot.visibility = View.GONE
+                    stagesState.text = resources.getString(R.string.everything_ok) + " (5/5) :)"
+                }
             }
+
 
             //Set perfects and feedback error
             perfectsList.clear()

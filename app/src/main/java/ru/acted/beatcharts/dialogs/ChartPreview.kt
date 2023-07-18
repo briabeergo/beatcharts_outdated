@@ -344,7 +344,10 @@ class ChartPreview : Fragment() {
                             if (note.type == 5) railHolds.add(RailHold(note.offsets, note.lane))
 
                             //Now decrease notes counter
-                            binding.remainigNotesCount.text = (binding.remainigNotesCount.text.toString().toInt() - 1).toString()
+                            binding.apply {
+                                remainigNotesCount.text = (remainigNotesCount.text.toString().toInt() - 1).toString()
+                                remainigNotesCountHighlight.text = remainigNotesCount.text
+                            }
                             animateNotesCountChanged()
                         } else break
                     }
@@ -366,7 +369,7 @@ class ChartPreview : Fragment() {
     }
 
     private fun animateNotesCountChanged() {
-        val localDecelerate = DecelerateInterpolator(2f)
+        val localDecelerate = DecelerateInterpolator(3f)
 
         binding.apply {
             notesRemainingContainer.scaleX = 1.3f
@@ -375,7 +378,7 @@ class ChartPreview : Fragment() {
                 interpolator = localDecelerate
                 scaleX(1f)
                 scaleY(1f)
-                duration = 450
+                duration = 800
                 start()
             }
 
@@ -383,23 +386,31 @@ class ChartPreview : Fragment() {
             notesRemainingHighlight.animate().apply {
                 interpolator = localDecelerate
                 alpha(0.05f)
-                duration = 450
+                duration = 800
+                start()
+            }
+
+            remainigNotesCountHighlight.alpha = 0.1f
+            remainigNotesCountHighlight.animate().apply {
+                interpolator = localDecelerate
+                alpha(0f)
+                duration = 550
                 start()
             }
 
             remainigNotesCount.alpha = 1f
             remainigNotesCount.animate().apply {
                 interpolator = localDecelerate
-                alpha(0.7f)
-                duration = 450
+                alpha(0.5f)
+                duration = 800
                 start()
             }
 
             notesRemainingText.alpha = 0.7f
             notesRemainingText.animate().apply {
                 interpolator = localDecelerate
-                alpha(0f)
-                duration = 450
+                alpha(0.1f)
+                duration = 800
                 start()
             }
         }

@@ -884,7 +884,11 @@ class DeEncodingManager {
         allNotesBytes.size.toVarint().forEach { chartConversionResult.resultData.add(it) }
         allNotesBytes.forEach { chartConversionResult.resultData.add(it) }
 
-        //Write sections bytes (from .chart file) -------------------------------------------------------------
+        //Write sections bytes (from .chart file) --------------------------------------------------------------------------------
+        //Add one section at the end if there is no any of them
+        if (chart.sections.size == 0)
+            if (chart.notes.size > 0) chart.sections.add(chart.notes[chart.notes.lastIndex].offsets[0].position)
+
         val allSectionsBytes = mutableListOf<Byte>()
         chart.sections.forEach {
             //Add length and key (length is always 5)
