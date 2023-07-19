@@ -51,8 +51,10 @@ class DeEncodingManager {
         var i = 0
         while (i < bytes.size) {
             //Interact with activity
-            if (i % 300 == 0) withContext(Dispatchers.Main) {
-                viewModel?.let { it.pubProgressInteraction!!.value = i }
+            viewModel?.let {
+                if (i % 300 == 0) withContext(Dispatchers.Main) {
+                    it.pubProgressInteraction.value = i
+                }
             }
 
             //Read current byte as string
@@ -684,69 +686,72 @@ class DeEncodingManager {
                                 }
                                 'h' -> {
                                     //This is rail hold position change prop
-                                    try {
-                                        val tagPosition = chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().toLong()
-                                        var currentLane = 0
-                                        var nextLane = 0
-                                        chartLines[i].substring(chartLines[i].indexOf("h")+1).let {
-                                            currentLane = it[0].toString().toInt()-1
-                                            nextLane = it[2].toString().toInt()-1
-                                        }
+                                    //Split multiple
+                                    val tagList = chartLines[i].substring(chartLines[i].indexOf("h")+1).split(",")
+                                    val tagPosition = chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().toLong()
+                                    tagList.forEach { tag ->
+                                        try {
+                                            tag.trim()
+                                            var currentLane: Int
+                                            var nextLane: Int
+                                            tag.let {
+                                                currentLane = it[0].toString().toInt()-1
+                                                nextLane = it[2].toString().toInt()-1
+                                            }
 
-                                        //Check ALL notes to match position and lane (there is no better way...)
-                                        var isNoteFound = false
-                                        chart.notes.forEachIndexed { index, note ->
-                                            if (tagPosition >= note.rawPos.first() && tagPosition <= note.rawPos.last()) {
-                                                //Now check latest offset to allowed
-                                                val anchorOffset = note.offsets[note.offsets.size-1]
-                                                if (note.type == 5) {
-                                                    if (note.offsets.last().rawPos == tagPosition) {
-                                                        isNoteFound = true
-                                                        //This tag should replace last offset
-                                                        val lastOffset = note.offsets.last()
-                                                        lastOffset.lane = nextLane - 1
+                                            //Check ALL notes to match position and lane (there is no better way...)
+                                            var isNoteFound = false
+                                            chart.notes.forEachIndexed { index, note ->
+                                                if (tagPosition >= note.rawPos.first() && tagPosition <= note.rawPos.last()) {
+                                                    //Now check latest offset to allowed
+                                                    val anchorOffset = note.offsets[note.offsets.size-1]
+                                                    if (note.type == 5) {
+                                                        if (note.offsets.last().rawPos == tagPosition) {
+                                                            isNoteFound = true
+                                                            //This tag should replace last offset
+                                                            val lastOffset = note.offsets.last()
+                                                            lastOffset.lane = nextLane - 1
 
-                                                        chart.notes[index].offsets.removeLast()
-                                                        chart.notes[index].offsets.add(lastOffset)
-                                                    } else if (anchorOffset.lane == currentLane) {
+                                                            chart.notes[index].offsets.removeLast()
+                                                            chart.notes[index].offsets.add(lastOffset)
+                                                        } else if (anchorOffset.lane == currentLane) {
+                                                            isNoteFound = true
+                                                            //New offset data, should be added
+                                                            chart.notes[index].offsets.add(NoteOffset().apply {
+                                                                position = toBeatstarOffset(tagPosition.toInt(), chart.bpm)
+                                                                rawPos = tagPosition
+                                                                lane = nextLane
+                                                            })
+                                                        }
+                                                    } else if (note.offsets.first().rawPos == tagPosition && note.lane == currentLane) {
+                                                        chart.notes[index].type = 5
                                                         isNoteFound = true
-                                                        //New offset data, should be added
-                                                        chart.notes[index].offsets.add(NoteOffset().apply {
-                                                            position = toBeatstarOffset(tagPosition.toInt(), chart.bpm)
-                                                            rawPos = tagPosition
-                                                            lane = nextLane
-                                                        })
                                                     }
-                                                } else if (note.offsets.first().rawPos == tagPosition && note.lane == currentLane) {
-                                                    chart.notes[index].type = 5
-                                                    isNoteFound = true
                                                 }
                                             }
-                                        }
 
-                                        if (!isNoteFound) {
-                                            chartConversionResult.exceptionList.add(packException(4,
-                                                chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim()))
-                                            continue
+                                            if (!isNoteFound) {
+                                                chartConversionResult.exceptionList.add(packException(4,
+                                                    chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim()))
+                                            }
+                                        } catch (e: Exception) {
+                                            //Exception
+                                            chartConversionResult.exceptionList.add(packException(5,
+                                                chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim(), //Flag pos
+                                                chartLines[i].substring(chartLines[i].indexOf("E")+2).trim())) //Event
                                         }
-                                    } catch (e: Exception) {
-                                        //Exception
-                                        chartConversionResult.exceptionList.add(packException(5,
-                                            chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim(), //Flag pos
-                                            chartLines[i].substring(chartLines[i].indexOf("E")+2).trim())) //Event
-                                        continue
                                     }
                                 }
                                 else -> {
                                     //Swipe direction or unknown
-                                    //Split all the tags
-                                    val tagsList = chartLines[i].substring(chartLines[i].indexOf("E")+2).split(",")
+                                    //Split multiple
+                                    val tagList = chartLines[i].substring(chartLines[i].indexOf("E")+2).split(",")
                                     //Trim everything
-                                    tagsList.forEach {
-                                        it.trim().trimEnd()
+                                    tagList.forEach {
+                                        it.trim()
                                     }
                                     //Check all the tags
-                                    for (j in tagsList.indices) {
+                                    for (j in tagList.indices) {
                                         //Check every note on this position
                                         val tagPos = chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd().toLong()
                                         //val notesTagCandidates = chart.notes.takeWhile {it.rawPos == tagPos}
@@ -767,9 +772,9 @@ class DeEncodingManager {
                                         var isNoteFound = false
                                         for (k in noteIndexes.indices) {
                                             //Now check lane
-                                            if (chart.notes[noteIndexes[k]].lane == tagsList[j][tagsList[j].length-1].toString().toInt()-1) {
+                                            if (chart.notes[noteIndexes[k]].lane == tagList[j][tagList[j].length-1].toString().toInt()-1) {
                                                 isNoteFound = true
-                                                chart.notes[noteIndexes[k]].swipe = when (tagsList[j].dropLast(1)) {
+                                                chart.notes[noteIndexes[k]].swipe = when (tagList[j].dropLast(1)) {
                                                     "u" -> 1
                                                     "d" -> 2
                                                     "l" -> 3
@@ -782,7 +787,7 @@ class DeEncodingManager {
                                                         //Exception
                                                         chartConversionResult.exceptionList.add(packException(5,
                                                             chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim(),
-                                                            tagsList[j].dropLast(1).trim()))
+                                                            tagList[j].dropLast(1).trim()))
                                                         continue
                                                     }
                                                 }
@@ -792,7 +797,7 @@ class DeEncodingManager {
                                         if (!isNoteFound) {
                                             //Note not found on this lane
                                             chartConversionResult.exceptionList.add(packException(6,
-                                                tagsList[j][tagsList[j].length-1].toString(), //Lane
+                                                tagList[j][tagList[j].length-1].toString(), //Lane
                                                 chartLines[i].substring(0, chartLines[i].indexOf("=")-1).trim().trimEnd())) //Position
                                             continue
                                         }
