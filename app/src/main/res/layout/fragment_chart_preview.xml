@@ -274,39 +274,62 @@
                         app:layout_constraintStart_toStartOf="@+id/imageView34"
                         app:layout_constraintTop_toTopOf="parent">
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/leftLane"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="2dp"
                             android:layout_weight="1"
                             android:alpha="0"
                             android:background="@drawable/backgroud_prefrect_p_gradient"
-                            android:orientation="vertical"
-                            android:rotation="180"></LinearLayout>
+                            android:rotation="180"
+                            tools:layout_conversion_absoluteHeight="400dp"
+                            tools:layout_conversion_absoluteWidth="78dp"
+                            tools:layout_editor_absoluteX="88dp"
+                            tools:layout_editor_absoluteY="173dp">
 
-                        <LinearLayout
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="0dp"
+                                android:layout_height="0dp"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="72dp"
+                                android:alpha="0"
+                                android:background="@drawable/card_colored_a_faded"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintDimensionRatio="1:1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/imageView36"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:src="@drawable/arrow"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/midLane"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginStart="2dp"
-                            android:layout_marginEnd="1dp"
                             android:layout_weight="1"
                             android:alpha="0"
                             android:background="@drawable/backgroud_prefrect_p_gradient"
-                            android:orientation="vertical"
-                            android:rotation="180"></LinearLayout>
+                            android:rotation="180"></androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <LinearLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:id="@+id/rightLane"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_marginEnd="1dp"
                             android:layout_weight="1"
                             android:alpha="0"
                             android:background="@drawable/backgroud_prefrect_p_gradient"
-                            android:orientation="vertical"
-                            android:rotation="180"></LinearLayout>
+                            android:rotation="180"></androidx.constraintlayout.widget.ConstraintLayout>
                     </LinearLayout>
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -671,7 +694,7 @@
             app:layout_constraintTop_toTopOf="parent"></LinearLayout>
 
         <TextView
-            android:id="@+id/textView64"
+            android:id="@+id/previewCloseButtonText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

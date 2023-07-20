@@ -348,6 +348,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <LinearLayout
+            android:id="@+id/backgroundLight"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.6"
+            android:background="@color/background_default"
+            android:orientation="horizontal"></LinearLayout>
+
         <FrameLayout
             android:id="@+id/dialogOverlay"
             android:layout_width="match_parent"

@@ -264,6 +264,7 @@
     <string name="medal_diamond_perfect">Diamond Perfect</string>
     <string name="notes_left">notes remaining</string>
     <string name="no_sections_hint">There is no sections in the chart :(. But BeatCharts will add one in the end of the song for you! :)</string>
+    <string name="cancelling">Cancelling...</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>
