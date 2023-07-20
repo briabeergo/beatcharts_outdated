@@ -143,9 +143,7 @@ class CommunityActivity : AppCompatActivity(){
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.dialogOverlay, DeleteDialog.newInstance(), "dialog").commitNow()
 
-                    binding.blurBackgroundHome.visibility = View.VISIBLE
-                    binding.blurBackgroundHome.setBlurEnabled(true)
-                    binding.blurBackgroundHome.animateEnable()
+                    animateBlurredBackground()
                     binding.navblur.setBlurEnabled(false)
                     prevDialog = 1
                 }
@@ -198,6 +196,7 @@ class CommunityActivity : AppCompatActivity(){
                     binding.dialogOverlay.visibility = View.VISIBLE
                     binding.blurBackgroundHome.visibility = View.VISIBLE
                     binding.blurBackgroundHome.setBlurEnabled(true)
+                    binding.backgroundLight.alpha = 0.6f
                     binding.navblur.setBlurEnabled(false)
                     prevDialog = 3
                 }
@@ -219,9 +218,7 @@ class CommunityActivity : AppCompatActivity(){
                     binding.updateNotif.getLocationOnScreen(notifLocation)
                     supportFragmentManager.beginTransaction().replace(R.id.dialogOverlay, UpdateDialog.newInstance(tags!!.getValue(ver).get("type").toString().toInt(), tags!!.getValue(ver).get("isTest") as Boolean, changelogs!!.get(ver)!!.replace("\\n", "\n"), tags!!.getValue(ver).get("size_mb").toString(), tags!!.getValue(ver).get("link").toString(), notifLocation[1], true)).commitNow()
 
-                    binding.blurBackgroundHome.visibility = View.VISIBLE
-                    binding.blurBackgroundHome.setBlurEnabled(true)
-                    binding.blurBackgroundHome.animateEnable()
+                    animateBlurredBackground()
                     binding.navblur.setBlurEnabled(false)
                     prevDialog = 5
                 }
@@ -230,9 +227,7 @@ class CommunityActivity : AppCompatActivity(){
                     binding.dialogOverlay.visibility = View.VISIBLE
                     binding.scoreSyncDialog.scaleAppear()
 
-                    binding.blurBackgroundHome.visibility = View.VISIBLE
-                    binding.blurBackgroundHome.setBlurEnabled(true)
-                    binding.blurBackgroundHome.animateEnable()
+                    animateBlurredBackground()
                     binding.navblur.setBlurEnabled(false)
                     prevDialog = 6
                 }
@@ -243,9 +238,8 @@ class CommunityActivity : AppCompatActivity(){
 
                     binding.blurBackgroundHome.visibility = View.VISIBLE
                     binding.navblur.setBlurEnabled(false)
-                    binding.blurBackgroundHome.setBlurEnabled(true)
+                    animateBlurredBackground()
                     binding.blurBackgroundHome.setBlurAutoUpdate(false)
-                    binding.blurBackgroundHome.animateEnable()
                     prevDialog = 7
                 }
             }
@@ -296,6 +290,22 @@ class CommunityActivity : AppCompatActivity(){
             }
         }, 1000)
 
+    }
+
+    private fun animateBlurredBackground() {
+        binding.apply {
+            blurBackgroundHome.visibility = View.VISIBLE
+            blurBackgroundHome.setBlurEnabled(true)
+            blurBackgroundHome.animateEnable()
+
+            backgroundLight.alpha = 0f
+            backgroundLight.animate().apply {
+                interpolator = DecelerateInterpolator(2f)
+                duration = 500
+                alpha(0.6f)
+                start()
+            }
+        }
     }
 
     override fun onBackPressed() {

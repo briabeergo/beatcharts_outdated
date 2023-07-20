@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import jp.wasabeef.blurry.Blurry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -75,16 +76,27 @@ class ChartPreview : Fragment() {
         outputStream.close()
     }
 
+    private var isCancelling = false
     private fun closeThisWindow() {
-        bgTasks.forEach {
-            it.cancel()
-        }
-        timers.forEach {
-            it.cancel()
-        }
+        if (!isCancelling) {
+            isCancelling = true
+            binding.previewCloseButtonText.setText(R.string.cancelling)
 
-        binding.previewRoot.scaleDisappear {}
-        Handler().postDelayed({viewModel.changeDialogTo(0)}, 100)
+            //Waiting for conversion completion
+            lifecycleScope.launch(Dispatchers.IO) {
+                bgTasks.forEach {
+                    it.cancelAndJoin()
+                }
+                timers.forEach {
+                    it.cancel()
+                }
+
+                withContext(Dispatchers.Main) {
+                    binding.previewRoot.scaleDisappear {}
+                    Handler().postDelayed({viewModel.changeDialogTo(0)}, 100)
+                }
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -290,8 +302,8 @@ class ChartPreview : Fragment() {
                             pianoButton.animation?.cancel()
                             if (railHold.offsets.size == 0) //This was the last offset [final one]
                                 pianoButton.animate().apply {
-                                    interpolator = LinearInterpolator()
-                                    duration = 150
+                                    interpolator = DecelerateInterpolator(2f)
+                                    duration = 250
                                     startDelay = 0
                                     alpha(0f)
                                     start()
@@ -333,8 +345,8 @@ class ChartPreview : Fragment() {
 
                             //Disappear timings
                             pianoButton.animate().apply {
-                                interpolator = LinearInterpolator()
-                                duration = 150
+                                interpolator = DecelerateInterpolator(2f)
+                                duration = 250
                                 startDelay = if (note.offsets.size > 1) lastTime - noteTime else 0
                                 alpha(0f)
                                 start()
