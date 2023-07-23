@@ -265,6 +265,9 @@
     <string name="notes_left">notes remaining</string>
     <string name="no_sections_hint">There is no sections in the chart :(. But BeatCharts will add one in the end of the song for you! :)</string>
     <string name="cancelling">Cancelling...</string>
+    <string name="library">Library</string>
+    <string name="explore">Explore</string>
+    <string name="pvp">Matchmaking</string>
     <!-- Strings used for fragments for navigation -->
 
 </resources>

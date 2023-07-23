@@ -12,4 +12,11 @@
             <enum name="right" value="1" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="MovingSquaresView">
+        <attr name="sqrSpeed" format="float" />
+        <attr name="frequency" format="integer" />
+        <attr name="squareSize" format="dimension" />
+        <attr name="moveRight" format="boolean" />
+        <attr name="squareColor" format="color" />
+    </declare-styleable>
 </resources>

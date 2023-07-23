@@ -210,7 +210,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/estate"
+                        app:srcCompat="@drawable/music_note"
                         app:tint="@color/foreground_active" />
 
                     <TextView
@@ -219,7 +219,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="7dp"
                         android:fontFamily="@font/googlesans_medium"
-                        android:text="@string/home"
+                        android:text="@string/library"
                         android:textColor="@color/foreground_active"
                         android:textSize="11sp"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -264,7 +264,7 @@
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/store"
+                        app:srcCompat="@drawable/compass"
                         app:tint="@color/foreground_active" />
 
                     <TextView
@@ -272,7 +272,60 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/googlesans_medium"
-                        android:text="@string/community"
+                        android:text="@string/explore"
+                        android:textColor="@color/foreground_active"
+                        android:textSize="11sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/pvp_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/pvpClickListener"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="-15dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="-15dp"
+                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        app:cardBackgroundColor="#00FFFFFF"
+                        app:cardCornerRadius="50sp"
+                        app:cardElevation="0sp"
+                        app:cardMaxElevation="0sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/pvpIcon"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:alpha="0.4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/trophy"
+                        app:tint="@color/foreground_active" />
+
+                    <TextView
+                        android:id="@+id/pvpText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/googlesans_medium"
+                        android:text="@string/pvp"
                         android:textColor="@color/foreground_active"
                         android:textSize="11sp"
                         app:layout_constraintEnd_toEndOf="parent"

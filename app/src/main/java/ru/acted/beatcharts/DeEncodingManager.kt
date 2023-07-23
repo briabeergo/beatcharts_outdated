@@ -11,6 +11,7 @@ import com.arthenica.mobileffmpeg.Config.RETURN_CODE_SUCCESS
 import com.arthenica.mobileffmpeg.FFmpeg
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import org.json.JSONObject
 import ru.acted.beatcharts.types.*
 import ru.acted.beatcharts.utils.BeatChartsUtils
@@ -38,7 +39,7 @@ class DeEncodingManager {
         //Level -2: Now reading not JSON
         //Level -1: JSON reading begin or end
         var currentFieldNumber = 0
-        var JSONEndPoints = mutableListOf<Int>()
+        val JSONEndPoints = mutableListOf<Int>()
         var currentJSONFieldNumberGlobal = 0
 
         var doneString = ""
@@ -50,6 +51,8 @@ class DeEncodingManager {
         //Read every byte
         var i = 0
         while (i < bytes.size) {
+            yield()
+
             //Interact with activity
             viewModel?.let {
                 if (i % 300 == 0) withContext(Dispatchers.Main) {
@@ -1082,7 +1085,6 @@ class DeEncodingManager {
         }
         repeat(300) { outputStream.write(0) }
         outputStream.close()
-        //outputFile.appendBytes(bytes.toByteArray())
 
         return true
     }

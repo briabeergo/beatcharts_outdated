@@ -259,4 +259,7 @@
     <string name="notes_left">нот осталось</string>
     <string name="no_sections_hint">Вы не добавили секций в чарт :(. Но BeatCharts добавит одну в конец за вас! :)</string>
     <string name="cancelling">Отменяем...</string>
+    <string name="library">Библиотека</string>
+    <string name="explore">Обзор</string>
+    <string name="pvp">Матчмейкинг</string>
 </resources>

@@ -1,32 +1,26 @@
 package ru.acted.beatcharts.dialogs
 
-import android.animation.Animator
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import jp.wasabeef.blurry.Blurry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
-import org.videolan.libvlc.LibVLC
-import org.videolan.libvlc.Media
-import org.videolan.libvlc.MediaPlayer
+import android.media.MediaPlayer
 import ru.acted.beatcharts.DeEncodingManager
 import ru.acted.beatcharts.R
 import ru.acted.beatcharts.dataProcessors.AudioManager
@@ -36,8 +30,20 @@ import ru.acted.beatcharts.types.NoteOffset
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.openFromCenter
 import ru.acted.beatcharts.utils.BeatChartsUtils.Animations.Companion.scaleDisappear
 import ru.acted.beatcharts.viewModels.MainViewModel
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
+
+//Swipe directions (chart class internal values)
+private const val UP = 1
+private const val DOWN = 2
+private const val LEFT = 3
+private const val RIGHT = 4
+private const val UP_LEFT = 5
+private const val UP_RIGHT = 6
+private const val DOWN_LEFT = 7
+private const val DOWN_RIGHT = 8
 
 class ChartPreview : Fragment() {
     private var songId: Int? = null
@@ -46,10 +52,7 @@ class ChartPreview : Fragment() {
     private val binding get() = _binding!!
     private lateinit var viewModel: MainViewModel
 
-    private var _libvlc: LibVLC? = null
-    private var _mediaPlayer: MediaPlayer? = null
-    private val libvlc get() = _libvlc!!
-    private val mediaPlayer get() = _mediaPlayer!!
+    private var mediaPlayer = MediaPlayer()
 
     private val bgTasks = mutableListOf<Job>()
     private val timers = mutableListOf<CountDownTimer>()
@@ -102,8 +105,6 @@ class ChartPreview : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.previewRoot.openFromCenter()
-        _libvlc = LibVLC(requireContext())
-        _mediaPlayer = MediaPlayer(libvlc)
 
         viewModel.songsList.value?.get(songId!!)?.let { song ->
             //Bind visuals
@@ -188,18 +189,33 @@ class ChartPreview : Fragment() {
         }
     }
 
+    fun mp3ToRawAudioBytes(path: String): ByteArray {
+        val mp3File = File(path)
+        val inputStream = FileInputStream(mp3File)
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        val buffer = ByteArray(1024)
+        var bytesRead = inputStream.read(buffer)
+        while (bytesRead != -1) {
+            byteArrayOutputStream.write(buffer, 0, bytesRead)
+            bytesRead = inputStream.read(buffer)
+        }
+        inputStream.close()
+        return byteArrayOutputStream.toByteArray()
+    }
+
     private var mediaFile: File? = null
     private var chart: Chart? = null
     private fun checkForLoadingCompleted() {
         if (mediaFile != null && chart != null) {
+
             //Play this file
-            mediaPlayer.media = Media(libvlc, Uri.fromFile(mediaFile))
-            //Block playing until length init
-            mediaPlayer.play()
-            while (mediaPlayer.length <= (0).toLong()) {}
-            val songDuration = mediaPlayer.length/2
-            mediaPlayer.stop()
-            mediaPlayer.play()
+            mediaPlayer.setDataSource(requireContext(), Uri.fromFile(mediaFile))
+            mediaPlayer.prepare()
+
+            //Get audio duration
+            val songDuration = mediaPlayer.duration.toLong()
+
+            mediaPlayer.start()
 
             //Feedback start
             binding.apply {
@@ -302,10 +318,9 @@ class ChartPreview : Fragment() {
                             pianoButton.animation?.cancel()
                             if (railHold.offsets.size == 0) //This was the last offset [final one]
                                 pianoButton.animate().apply {
-                                    interpolator = DecelerateInterpolator(2f)
-                                    duration = 250
+                                    interpolator = DecelerateInterpolator(1f)
+                                    duration = 370
                                     startDelay = 0
-                                    alpha(0f)
                                     start()
                                 }
                             else //Change lane
@@ -332,6 +347,13 @@ class ChartPreview : Fragment() {
                             //This note is counted on that tick! (Tag to remove this one from queue)
                             indexesForDeletion.add(i)
 
+                            val highlightLaneView = when (note.lane) {
+                                0 -> binding.leftLaneHiglight
+                                1 -> binding.midLaneHiglight
+                                2 -> binding.rightLaneHiglight
+                                else -> binding.leftLaneHiglight
+                            }
+
                             val pianoButton = when (note.lane) {
                                 0 -> binding.leftLane
                                 1 -> binding.midLane
@@ -339,14 +361,16 @@ class ChartPreview : Fragment() {
                                 else -> binding.leftLane
                             }
 
+                            //Reset everything just in case
+                            highlightLaneView.animation?.cancel()
                             pianoButton.animation?.cancel()
                             pianoButton.translationX = 0f
-                            pianoButton.alpha = 0.8f
+                            highlightLaneView.alpha = 0.8f
 
                             //Disappear timings
-                            pianoButton.animate().apply {
-                                interpolator = DecelerateInterpolator(2f)
-                                duration = 250
+                            highlightLaneView.animate().apply {
+                                interpolator = DecelerateInterpolator(1f)
+                                duration = 370
                                 startDelay = if (note.offsets.size > 1) lastTime - noteTime else 0
                                 alpha(0f)
                                 start()
@@ -354,6 +378,9 @@ class ChartPreview : Fragment() {
 
                             //Check if this is rail holds keks
                             if (note.type == 5) railHolds.add(RailHold(note.offsets, note.lane))
+
+                            //Animate swipe if needed
+                            if (note.swipe != 0) animateSwipe(note.lane, note.swipe, lastTime - noteTime)
 
                             //Now decrease notes counter
                             binding.apply {
@@ -384,8 +411,8 @@ class ChartPreview : Fragment() {
         val localDecelerate = DecelerateInterpolator(3f)
 
         binding.apply {
-            notesRemainingContainer.scaleX = 1.3f
-            notesRemainingContainer.scaleY = 1.3f
+            notesRemainingContainer.scaleX = 1.2f
+            notesRemainingContainer.scaleY = 1.2f
             notesRemainingContainer.animate().apply {
                 interpolator = localDecelerate
                 scaleX(1f)
@@ -428,9 +455,72 @@ class ChartPreview : Fragment() {
         }
     }
 
+    private fun animateSwipe(lane: Int, direction: Int, delay: Long) {
+        binding.apply {
+            //Take needed lane
+            var arrowNeeded = leftArrow
+            var arrowIcon = arrowLeftIcon
+            when (lane) {
+                1 -> {
+                    arrowNeeded = midArrow
+                    arrowIcon = arrowMiddleIcon
+                }
+                2 -> {
+                    arrowNeeded = rightArrow
+                    arrowIcon = arrowRightIcon
+                }
+            }
+
+            //Take needed direction
+            arrowIcon.rotation = when (direction) {
+                UP -> 0f
+                UP_RIGHT -> 45f
+                RIGHT -> 90f
+                DOWN_RIGHT -> 135f
+                DOWN -> 180f
+                DOWN_LEFT -> 225f
+                LEFT -> 270f
+                UP_LEFT -> 315f
+                else -> 0f
+            }
+
+            arrowNeeded.animation?.cancel()
+            arrowNeeded.scaleX = 0.8f
+            arrowNeeded.scaleY = 0.8f
+            arrowNeeded.alpha = 1f
+            arrowNeeded.animate().apply {
+                interpolator = DecelerateInterpolator(1f)
+                scaleX(1.2f)
+                scaleY(1.2f)
+                alpha(0f)
+                duration = 700
+                startDelay = delay
+                start()
+            }
+        }
+    }
+
     private fun animateStart() {
         val decelerateInterpolator = DecelerateInterpolator(1.0f)
         binding.apply {
+
+            movingSquaresViewTop.translationX = 500f
+            movingSquaresViewTop.animate().apply {
+                interpolator = decelerateInterpolator
+                duration = 1200
+                alpha(0.1f)
+                translationX(0f)
+                start()
+            }
+
+            movingSquaresViewBottom.translationX = -500f
+            movingSquaresViewBottom.animate().apply {
+                interpolator = decelerateInterpolator
+                duration = 1200
+                alpha(0.1f)
+                translationX(0f)
+                start()
+            }
 
             playboard.scaleX = 1.3f
             playboard.scaleY = 1.3f
