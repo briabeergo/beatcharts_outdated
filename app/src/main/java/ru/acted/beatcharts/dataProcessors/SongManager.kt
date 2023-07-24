@@ -8,6 +8,7 @@ import android.os.Handler
 import android.util.Log
 import android.widget.Toast
 import androidx.palette.graphics.Palette
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.acted.beatcharts.DeEncodingManager
@@ -38,6 +39,7 @@ class SongManager {
         return songs
     }
 
+    private val crashlytics = FirebaseCrashlytics.getInstance()
     private fun parseSongData(songsDirectory: File, reso: Resources, isHiddenDirectory: Boolean): Song {
         val song = Song()
 
@@ -75,6 +77,7 @@ class SongManager {
         }
 
         //Get artwork and color FROM BUNDLE
+        crashlytics.setCustomKey("songDirectory", song.directoryPath)
         if (File("${song.directoryPath}/artwork.bundle").exists()){
             song.artworkPath = "${song.directoryPath}/artwork.bundle"
 
@@ -86,6 +89,7 @@ class SongManager {
                 song.isColorDark = isColorDark(song.baseColor.toInt())
             } catch (e: Exception) {
                 song.artworkPath = "none"
+                crashlytics.recordException(e)
             }
         } else {
             song.artworkPath = "none"
