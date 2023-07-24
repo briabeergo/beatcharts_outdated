@@ -39,6 +39,15 @@ import ru.acted.beatcharts.viewModels.MainViewModel
 import java.io.File
 import java.util.function.Predicate
 
+private const val CLOSE_DIALOGS_SIGNAL = 0
+private const val ACTION_PERFORMED_SIGNAL = 2
+private const val CHART_DELETE_DIALOG = 1
+private const val FILES_REQUEST_DIALOG = 3
+private const val UPLOAD_CHART = 4 //TODO MAKE THIS SHIT NOT IN DIALOGS HANDLER БЛЯТЬ НАХУЙ
+private const val UPDATE_DIALOG = 5
+private const val SYNC_PROMO_DIALOG = 6
+private const val CHART_PREVIEW_DIALOG = 7
+
 class CommunityActivity : AppCompatActivity(){
 
     private var currentPage = 1
@@ -85,164 +94,7 @@ class CommunityActivity : AppCompatActivity(){
 
         viewModel.currentDialog.observe(this) {
             Log.i("TEST", "Changed dialog to $it")
-            when (it) {
-                0 -> {
-                    //Close dialogs
-                    when (prevDialog) {
-                        99 -> {} //Don't do anything when it's action notif
-                        4 -> { //Close this upload page with animation
-                            binding.tapMuter.visibility = View.VISIBLE
-                            binding.dialogOverlay.closeToRight {
-                                supportFragmentManager.findFragmentByTag("dialog")?.let {
-                                    supportFragmentManager.beginTransaction().remove(it).commitNow()
-                                }
-                                binding.dialogOverlay.translationX = 0f
-                                binding.dialogOverlay.alpha = 1f
-                                binding.dialogOverlay.visibility = View.GONE
-                                binding.mainLoadingIndicator.visibility = View.GONE
-                                binding.navblur.setBlurEnabled(true)
-                                binding.blurBackgroundHome.setBlurEnabled(false)
-                                binding.blurBackgroundHome.visibility = View.GONE
-                                binding.tapMuter.visibility = View.GONE
-                            }
-                        }
-                        7 -> {
-                            binding.blurBackgroundHome.setBlurAutoUpdate(true)
-                            binding.blurBackgroundHome.animateDisable {
-                                binding.blurBackgroundHome.setBlurEnabled(false)
-                                binding.blurBackgroundHome.visibility = View.GONE
-                                binding.dialogOverlay.visibility = View.GONE
-                                supportFragmentManager.findFragmentByTag("dialog")?.let {
-                                    supportFragmentManager.beginTransaction().remove(it).commitNow()
-                                }
-                                binding.mainLoadingIndicator.visibility = View.GONE
-                                binding.navblur.setBlurEnabled(true)
-                            }
-                        }
-                        else -> { //Close everything else
-                            Handler().postDelayed({
-                                binding.blurBackgroundHome.animateDisable {
-                                    binding.blurBackgroundHome.setBlurEnabled(false)
-                                    binding.blurBackgroundHome.visibility = View.GONE
-                                    binding.dialogOverlay.visibility = View.GONE
-                                    supportFragmentManager.findFragmentByTag("dialog")?.let {
-                                        supportFragmentManager.beginTransaction().remove(it).commitNow()
-                                    }
-                                    binding.mainLoadingIndicator.visibility = View.GONE
-                                    binding.navblur.setBlurEnabled(true)
-                                }
-                            }, 200)
-                        }
-                    }
-
-                    prevDialog = 0
-                }
-                1 -> {
-                    //Chart delete dialog
-                    binding.dialogOverlay.visibility = View.VISIBLE
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.dialogOverlay, DeleteDialog.newInstance(), "dialog").commitNow()
-
-                    animateBlurredBackground()
-                    binding.navblur.setBlurEnabled(false)
-                    prevDialog = 1
-                }
-                2 -> {
-                    //Get type of action
-                    when (prevDialog) {
-                        0 -> {
-                            //Invert is hidden value and replace song's directory in list
-                            val newList = viewModel.songsList.value!!.toMutableList()
-                            newList.find { it.directoryPath == viewModel.songData.value!!.directoryPath}!!.isHidden = viewModel.songData.value!!.isHidden
-                            val songDirectory = File(newList.find { it.directoryPath == viewModel.songData.value!!.directoryPath}!!.directoryPath)
-                            newList.find { it.directoryPath == viewModel.songData.value!!.directoryPath}!!.directoryPath = if (viewModel.songData.value!!.isHidden) "/storage/emulated/0/beatstar/hidden/${songDirectory.nameWithoutExtension}"
-                                else "/storage/emulated/0/beatstar/songs/${songDirectory.nameWithoutExtension}"
-                            viewModel.setSongsList(newList.toList())
-
-                            viewModel.showNotif(if (viewModel.songData.value!!.isHidden) resources.getString(R.string.hide_success) else resources.getString(R.string.show_success))
-                            prevDialog = 99
-                        }
-                        1 -> {
-                            //Song was deleted
-                            //Remove deleted song from list
-                            val newList = viewModel.songsList.value!!.toMutableList()
-                            val predicate = Predicate { song: Song -> song.directoryPath == viewModel.songData.value!!.directoryPath}
-                            newList.removeIf(predicate)
-                            viewModel.setSongsList(newList.toList())
-
-                            viewModel.showNotif(resources.getString(R.string.deleted_successfully))
-                            prevDialog = 2
-                        }
-                        3 -> {
-                            //Files permission granted
-                            viewModel.setSongsList(SongManager().parseSongsInfo(resources))
-
-                            binding.dialogOverlay.visibility = View.GONE
-                            binding.mainLoadingIndicator.visibility = View.VISIBLE
-
-                            showPopUps() //Show pop ups after permission granted
-
-                            //viewModel.showNotif(resources.getString(R.string.setup_complete))
-                            prevDialog = 2
-                        }
-                    }
-
-                    viewModel.changeDialogTo(0)
-                }
-                3 -> {
-                    //Open files request activity
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.dialogOverlay, FilesDialog.newInstance(), "dialog").commitNow()
-                    binding.dialogOverlay.visibility = View.VISIBLE
-                    binding.blurBackgroundHome.visibility = View.VISIBLE
-                    binding.blurBackgroundHome.setBlurEnabled(true)
-                    binding.backgroundLight.alpha = 0.6f
-                    binding.navblur.setBlurEnabled(false)
-                    prevDialog = 3
-                }
-                4 -> {
-                    //Open upload chart dialog
-                    binding.blurBackgroundHome.visibility = View.VISIBLE
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.dialogOverlay, UploadPage.newInstance(), "dialog").commitNow()
-                    binding.dialogOverlay.visibility = View.VISIBLE
-                    //binding.dialogOverlay.openFromCenter()
-                    binding.navblur.setBlurEnabled(false)
-                    prevDialog = 4
-                    hideKeyboard()
-                }
-                5 -> {
-                    //Update dialog
-                    binding.dialogOverlay.visibility = View.VISIBLE
-                    val notifLocation = IntArray(2)
-                    binding.updateNotif.getLocationOnScreen(notifLocation)
-                    supportFragmentManager.beginTransaction().replace(R.id.dialogOverlay, UpdateDialog.newInstance(tags!!.getValue(ver).get("type").toString().toInt(), tags!!.getValue(ver).get("isTest") as Boolean, changelogs!!.get(ver)!!.replace("\\n", "\n"), tags!!.getValue(ver).get("size_mb").toString(), tags!!.getValue(ver).get("link").toString(), notifLocation[1], true)).commitNow()
-
-                    animateBlurredBackground()
-                    binding.navblur.setBlurEnabled(false)
-                    prevDialog = 5
-                }
-                6 -> {
-                    //Sync promo dialog
-                    binding.dialogOverlay.visibility = View.VISIBLE
-                    binding.scoreSyncDialog.scaleAppear()
-
-                    animateBlurredBackground()
-                    binding.navblur.setBlurEnabled(false)
-                    prevDialog = 6
-                }
-                7 -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.dialogOverlay, ChartPreview.newInstance(viewModel.songIdForPreview.value!!), "dialog").commitNow()
-                    binding.dialogOverlay.visibility = View.VISIBLE
-
-                    binding.blurBackgroundHome.visibility = View.VISIBLE
-                    binding.navblur.setBlurEnabled(false)
-                    animateBlurredBackground()
-                    binding.blurBackgroundHome.setBlurAutoUpdate(false)
-                    prevDialog = 7
-                }
-            }
+            handleDialogSignal(it)
         }
 
         initNavigation()
@@ -278,6 +130,167 @@ class CommunityActivity : AppCompatActivity(){
                 }
 
                 checkForUpdates()
+            }
+        }
+    }
+
+    //Я прошу прощения за этот пиздец, я это исправлю и если вы видите задачу, связанную с этим куском кода, пожалуйста, не мучайтесь, я это исправлю позже
+    private fun handleDialogSignal(code: Int) {
+        when (code) {
+            CLOSE_DIALOGS_SIGNAL -> {
+                when (prevDialog) {
+                    99 -> {} //Don't do anything when it's action notif
+                    UPLOAD_CHART -> { //Close this upload page with animation
+                        binding.tapMuter.visibility = View.VISIBLE
+                        binding.dialogOverlay.closeToRight {
+                            supportFragmentManager.findFragmentByTag("dialog")?.let {
+                                supportFragmentManager.beginTransaction().remove(it).commitNow()
+                            }
+                            binding.dialogOverlay.translationX = 0f
+                            binding.dialogOverlay.alpha = 1f
+                            binding.dialogOverlay.visibility = View.GONE
+                            binding.mainLoadingIndicator.visibility = View.GONE
+                            binding.navblur.setBlurEnabled(true)
+                            binding.blurBackgroundHome.setBlurEnabled(false)
+                            binding.blurBackgroundHome.visibility = View.GONE
+                            binding.tapMuter.visibility = View.GONE
+                        }
+                    }
+                    CHART_PREVIEW_DIALOG -> {
+                        binding.blurBackgroundHome.setBlurAutoUpdate(true)
+                        binding.blurBackgroundHome.animateDisable {
+                            binding.blurBackgroundHome.setBlurEnabled(false)
+                            binding.blurBackgroundHome.visibility = View.GONE
+                            binding.dialogOverlay.visibility = View.GONE
+                            supportFragmentManager.findFragmentByTag("dialog")?.let {
+                                supportFragmentManager.beginTransaction().remove(it).commitNow()
+                            }
+                            binding.mainLoadingIndicator.visibility = View.GONE
+                            binding.navblur.setBlurEnabled(true)
+                        }
+                    }
+                    else -> { //Close everything else
+                        Handler().postDelayed({
+                            binding.blurBackgroundHome.animateDisable {
+                                binding.blurBackgroundHome.setBlurEnabled(false)
+                                binding.blurBackgroundHome.visibility = View.GONE
+                                binding.dialogOverlay.visibility = View.GONE
+                                supportFragmentManager.findFragmentByTag("dialog")?.let {
+                                    supportFragmentManager.beginTransaction().remove(it).commitNow()
+                                }
+                                binding.mainLoadingIndicator.visibility = View.GONE
+                                binding.navblur.setBlurEnabled(true)
+                            }
+                        }, 200)
+                    }
+                }
+
+                prevDialog = 0
+            }
+            CHART_DELETE_DIALOG -> {
+                binding.dialogOverlay.visibility = View.VISIBLE
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.dialogOverlay, DeleteDialog.newInstance(), "dialog").commitNow()
+
+                animateBlurredBackground()
+                binding.navblur.setBlurEnabled(false)
+                prevDialog = 1
+            }
+            ACTION_PERFORMED_SIGNAL -> {
+                //Get type of action
+                when (prevDialog) {
+                    0 -> {
+                        //Invert is hidden value and replace song's directory in list
+                        val newList = viewModel.songsList.value!!.toMutableList()
+                        newList.find { it.directoryPath == viewModel.songData.value!!.directoryPath}!!.isHidden = viewModel.songData.value!!.isHidden
+                        val songDirectory = File(newList.find { it.directoryPath == viewModel.songData.value!!.directoryPath}!!.directoryPath)
+                        newList.find { it.directoryPath == viewModel.songData.value!!.directoryPath}!!.directoryPath = if (viewModel.songData.value!!.isHidden) "/storage/emulated/0/beatstar/hidden/${songDirectory.nameWithoutExtension}"
+                        else "/storage/emulated/0/beatstar/songs/${songDirectory.nameWithoutExtension}"
+                        viewModel.setSongsList(newList.toList())
+
+                        viewModel.showNotif(if (viewModel.songData.value!!.isHidden) resources.getString(R.string.hide_success) else resources.getString(R.string.show_success))
+                        prevDialog = 99
+                    }
+                    CHART_DELETE_DIALOG -> {
+                        //Song was deleted
+                        //Remove deleted song from list
+                        val newList = viewModel.songsList.value!!.toMutableList()
+                        val predicate = Predicate { song: Song -> song.directoryPath == viewModel.songData.value!!.directoryPath}
+                        newList.removeIf(predicate)
+                        viewModel.setSongsList(newList.toList())
+
+                        viewModel.showNotif(resources.getString(R.string.deleted_successfully))
+                        prevDialog = 2
+                    }
+                    FILES_REQUEST_DIALOG -> {
+                        //Files permission granted
+                        viewModel.setSongsList(SongManager().parseSongsInfo(resources))
+
+                        binding.dialogOverlay.visibility = View.GONE
+                        binding.mainLoadingIndicator.visibility = View.VISIBLE
+
+                        showPopUps() //Show pop ups after permission granted
+
+                        //viewModel.showNotif(resources.getString(R.string.setup_complete))
+                        prevDialog = 2
+                    }
+                }
+
+                viewModel.changeDialogTo(0)
+            }
+            FILES_REQUEST_DIALOG -> {
+                //Open files request activity
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.dialogOverlay, FilesDialog.newInstance(), "dialog").commitNow()
+                binding.dialogOverlay.visibility = View.VISIBLE
+                binding.blurBackgroundHome.visibility = View.VISIBLE
+                binding.blurBackgroundHome.setBlurEnabled(true)
+                binding.backgroundLight.alpha = 0.6f
+                binding.navblur.setBlurEnabled(false)
+                prevDialog = 3
+            }
+            UPLOAD_CHART -> {
+                //Open upload chart dialog
+                binding.blurBackgroundHome.visibility = View.VISIBLE
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.dialogOverlay, UploadPage.newInstance(), "dialog").commitNow()
+                binding.dialogOverlay.visibility = View.VISIBLE
+                //binding.dialogOverlay.openFromCenter()
+                binding.navblur.setBlurEnabled(false)
+                prevDialog = 4
+                hideKeyboard()
+            }
+            UPDATE_DIALOG -> {
+                //Update dialog
+                binding.dialogOverlay.visibility = View.VISIBLE
+                val notifLocation = IntArray(2)
+                binding.updateNotif.getLocationOnScreen(notifLocation)
+                supportFragmentManager.beginTransaction().replace(R.id.dialogOverlay, UpdateDialog.newInstance(tags!!.getValue(ver).get("type").toString().toInt(), tags!!.getValue(ver).get("isTest") as Boolean, changelogs!!.get(ver)!!.replace("\\n", "\n"), tags!!.getValue(ver).get("size_mb").toString(), tags!!.getValue(ver).get("link").toString(), notifLocation[1], true)).commitNow()
+
+                animateBlurredBackground()
+                binding.navblur.setBlurEnabled(false)
+                prevDialog = 5
+            }
+            SYNC_PROMO_DIALOG -> {
+                //Sync promo dialog
+                binding.dialogOverlay.visibility = View.VISIBLE
+                binding.scoreSyncDialog.scaleAppear()
+
+                animateBlurredBackground()
+                binding.navblur.setBlurEnabled(false)
+                prevDialog = 6
+            }
+            CHART_PREVIEW_DIALOG -> {
+                //Song preview dialog
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.dialogOverlay, ChartPreview.newInstance(viewModel.songIdForPreview.value!!), "dialog").commitNow()
+                binding.dialogOverlay.visibility = View.VISIBLE
+
+                binding.blurBackgroundHome.visibility = View.VISIBLE
+                binding.navblur.setBlurEnabled(false)
+                animateBlurredBackground()
+                binding.blurBackgroundHome.setBlurAutoUpdate(false)
+                prevDialog = 7
             }
         }
     }
