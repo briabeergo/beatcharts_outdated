@@ -4,6 +4,7 @@ An application for the Beatstar modding community. Very unfinished, but you are 
 - briabeergo as designer;
 - iconscout (icons);
 - all using libraries.
+- Redmi 3s/3x
 
 # Short introduction to the classes
 Utilities and tools:
