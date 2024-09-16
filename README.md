@@ -1,10 +1,5 @@
 ## What is this application?
-An application for the Beatstar modding community. Very unfinished, but you are welcome to do whatever you want with it. If you going to make something with it, please don't forget to mention it in the About App section:
-- m1l4q as artist;
-- briabeergo as designer;
-- iconscout (icons);
-- all using libraries.
-- Redmi 3s/3x
+An application for the Beatstar modding community. Just an outdated version, you are welcome to do whatever you want with it.
 
 # Short introduction to the classes
 Utilities and tools:
